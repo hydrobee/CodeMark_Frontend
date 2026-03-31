@@ -1,0 +1,214 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  background: #1a1a2e;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Page Background ── */
+.page-bg {
+  width: 100%;
+  min-height: 100vh;
+  background: #161b22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+/* ── Card ── */
+.card {
+  background: #23232f;
+  border-radius: 24px;
+  padding: 32px 36px 28px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.45);
+}
+
+/* ── Tab Row ── */
+.tab-row {
+  display: flex;
+  background: #ffffff;
+  border-radius: 999px;
+  padding: 4px;
+  margin-bottom: 28px;
+  width: fit-content;
+}
+
+.tab {
+  /* font-family: 'Sora', sans-serif; */
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  background: transparent;
+  color: #888;
+  transition: background 0.25s, color 0.25s;
+}
+
+.tab.active {
+  background: #5865f2;
+  color: #fff;
+}
+
+/* ── Form Title ── */
+.form-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: #f0f0f0;
+  margin-bottom: 22px;
+  letter-spacing: -0.3px;
+}
+
+/* ── Fields ── */
+.field {
+  width: 100%;
+  background: #f0efeb;
+  border: none;
+  border-radius: 10px;
+  padding: 14px 16px;
+  /* font-family: 'Sora', sans-serif; */
+  font-size: 14px;
+  color: #333;
+  outline: none;
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s;
+}
+
+.field::placeholder {
+  color: #999;
+}
+
+.field:focus {
+  box-shadow: 0 0 0 2px #5b5ef4;
+}
+
+/* ── Two-column row ── */
+.row-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.row-two .field {
+  margin-bottom: 12px;
+}
+
+/* ── Select wrapper ── */
+.select-wrap {
+  position: relative;
+  margin-bottom: 0;
+}
+
+.select-wrap .field.select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  cursor: pointer;
+}
+
+.chevron {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-60%);
+  font-size: 20px;
+  color: #777;
+  pointer-events: none;
+}
+
+/* ── Primary Button ── */
+.btn-primary {
+  width: 100%;
+  background: #5865f2;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 15px;
+  /* font-family: 'Sora', sans-serif; */
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 4px;
+  margin-bottom: 22px;
+  letter-spacing: 0.2px;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.btn-primary:hover {
+  background: #4a4de0;
+}
+
+.btn-primary:active {
+  transform: scale(0.98);
+}
+
+/* ── Brand ── */
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.brand-icon {
+  width: 40px;
+  height: 40px;
+  background: #3a3a50;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.brand-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: #ccc;
+  letter-spacing: 0.5px;
+}
+
+/* ── Terms ── */
+.terms {
+  font-size: 12px;
+  color: #777;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.terms a {
+  color: #aaa;
+  text-decoration: underline;
+}
+
+/* ── Forgot password ── */
+.forgot {
+  display: block;
+  text-align: right;
+  font-size: 12px;
+  color: #888;
+  text-decoration: none;
+  margin-top: -6px;
+  margin-bottom: 16px;
+}
+
+.forgot:hover {
+  color: #5b5ef4;
+}
+
+/* ── Hidden panel ── */
+.hidden {
+  display: none;
+}

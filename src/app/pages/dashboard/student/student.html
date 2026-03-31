@@ -1,0 +1,34 @@
+<div class="dashboard-layout">
+
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="welcome-section">
+        <h1>Welcome, {{ userName }}!</h1>
+        <p class="subtitle">Student Dashboard</p>
+      </div>
+      
+      <div class="header-actions">
+        <button class="notification-btn">
+          <span class="bell">🛎️</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Content Boxes -->
+    <div class="dashboard-content">
+
+      <!-- You can put all your cards here -->
+      <!-- Example: Pending Submission, Performance, Feedback Summary -->
+
+      <ng-content></ng-content>   <!-- This allows you to pass content from parent if needed -->
+
+    </div>
+
+  </div>
+</div>

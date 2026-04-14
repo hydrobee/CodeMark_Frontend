@@ -1,0 +1,63 @@
+<div class="dashboard-layout">
+  <app-sidebar-lecturer></app-sidebar-lecturer>
+
+  <div class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <div class="submission-logo">
+          <img src="Performance.png" alt="Performance Logo" />
+        </div>
+        <div class="welcome-section">
+          <h1>Average Performance</h1>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="notification-btn" (click)="navigate('/lecturer-notification')">
+          <span class="bell">
+            <img src="Notification.png" alt="" />
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="state-message">Loading performance data...</div>
+
+      <!-- Error -->
+      <div *ngIf="error" class="state-message error">{{ error }}</div>
+
+      <!-- No Data -->
+      <div *ngIf="!isLoading && !error && performanceData.length === 0" class="state-message">
+        No performance data available yet.
+      </div>
+
+      <!-- Chart -->
+      <div class="chart-card" *ngIf="!isLoading && !error && performanceData.length > 0">
+        <app-chart [performanceData]="performanceData"></app-chart>
+      </div>
+
+      <!-- Score Table -->
+      <div class="table-card" *ngIf="!isLoading && !error && performanceData.length > 0">
+        <h6>Score Breakdown</h6>
+        <table class="score-table">
+          <thead>
+            <tr>
+              <th>Assignment</th>
+              <th>Average Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of performanceData">
+              <td>{{ item.assignment || item.title }}</td>
+              <td>
+                <strong>{{ item.score | number:'1.0-2' }}%</strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

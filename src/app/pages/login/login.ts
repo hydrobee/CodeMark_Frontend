@@ -3,7 +3,6 @@ import { FormsModule } from '@angular/forms';
 import { Api } from '../../services/api';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { NgModel } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -48,7 +47,7 @@ export class Login {
       name: this.name + ' ' + this.lastName,
       email: this.email,
       password: this.password,
-      role: this.role
+      role: this.role,
     };
 
     if (this.role === 'student') {
@@ -65,7 +64,7 @@ export class Login {
         alert('Signup successful! Please login.');
         this.switchTab('signin');
       },
-      error: (err) => this.errorMsg = err.error?.detail || 'Signup failed'
+      error: (err) => (this.errorMsg = err.error?.detail || 'Signup failed'),
     });
   }
 
@@ -75,12 +74,18 @@ export class Login {
         localStorage.setItem('token', res.access_token);
         localStorage.setItem('user', JSON.stringify(res.user));
 
-        if (res.user.role === 'student') this.router.navigate(['/student']);
-        else if (res.user.role === 'lecturer') this.router.navigate(['/lecturer']);
-        else this.router.navigate(['/admin']);
+        const role = res.user.role;
+        if (role === 'student') {
+          this.router.navigate(['/student-dashboard']);
+        } else if (role === 'lecturer') {
+          this.router.navigate(['/lecturer-dashboard']);
+        } else if (role === 'administrator') {
+          this.router.navigate(['/admin']);
+        } else {
+          this.errorMsg = 'Unknown role. Please contact support.';
+        }
       },
-      error: (err) => this.errorMsg = err.error?.detail || 'Login failed'
+      error: (err) => (this.errorMsg = err.error?.detail || 'Login failed'),
     });
   }
-  
 }

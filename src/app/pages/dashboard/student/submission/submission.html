@@ -1,2 +1,62 @@
-<app-sidebar></app-sidebar>
+<div class="dashboard-layout">
+  <app-sidebar></app-sidebar>
 
+  <div class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <div class="submission-logo">
+          <img src="Submission.png" alt="Submission Logo" />
+        </div>
+        <div class="welcome-section">
+          <h1>Submission</h1>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="notification-btn">
+          <span class="bell" (click)="navigate('/student-notification')">
+            <img src="Notification.png" alt="" />
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Submission Content Box -->
+    <div class="dashboard-content">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="state-message">Loading assignments...</div>
+
+      <!-- Error -->
+      <div *ngIf="error" class="state-message error">
+        {{ error }}
+      </div>
+
+      <!-- No matching assignments -->
+      <div *ngIf="!isLoading && !error && pendingAssignments.length === 0" class="state-message">
+        No assignments with pending submission found.
+      </div>
+
+      <!-- Assignment Cards - Only pending ones with the exact status -->
+      <div class="cards-container" *ngIf="!isLoading && pendingAssignments.length > 0">
+        <div class="cards-row" *ngFor="let assignment of pendingAssignments">
+          <div
+            class="cards-content"
+            (click)="navigateToAssignment(assignment.assignment_id)"
+            style="cursor: pointer"
+          >
+            <div class="left-content">
+              <h6>{{ assignment.course_name }} - {{ assignment.title }}</h6>
+              <div class="due-date">
+                <p><strong>Opened: </strong> {{ assignment.created_at | date: 'mediumDate' }}</p>
+                <p><strong>Due Date:</strong> {{ assignment.deadline | date: 'mediumDate' }}</p>
+              </div>
+            </div>
+            <div class="right-content">
+              <img src="Arrow.png" alt="See more" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,77 @@
+<div class="dashboard-layout">
+  <app-sidebar-lecturer></app-sidebar-lecturer>
+  <div class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <div class="management-logo">
+          <img src="Feedback.png" alt="" />
+        </div>
+        <div class="welcome-section">
+          <h1>Assignment Management</h1>
+        </div>
+      </div>
+      <div class="header-sections">
+        <button class="notification-btn" (click)="navigate('/lecturer-notification')">
+          <span class="bell">
+            <img src="Notification.png" alt="" />
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <div class="first-row">
+        <div class="cards-container-1">
+          <div class="cards-row" (click)="navigate('/create-assignment')" style="cursor: pointer">
+            <div class="cards-content">
+              <div class="left-content">
+                <h6>Create Assignment</h6>
+              </div>
+              <div class="right-content">
+                <img src="Arrow.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cards-container-2">
+          <div class="cards-row" (click)="navigate('/view-assignment')" style="cursor: pointer;">
+            <div class="cards-content">
+              <div class="left-content">
+                <h6>View Assignment</h6>
+              </div>
+              <div class="right-content">
+                <img src="Arrow.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="second-row">
+        <div class="cards-container-3">
+          <div class="cards-row" (click)="navigate('/edit-assignment')" style="cursor: pointer;">
+            <div class="cards-content">
+              <div class="left-content">
+                <h6>Edit Assignment</h6>
+              </div>
+              <div class="right-content">
+                <img src="Arrow.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cards-container-4">
+          <div class="cards-row" (click)="navigate('/delete-assignment')" style="cursor: pointer;">
+            <div class="cards-content">
+              <div class="left-content">
+                <h6>Delete Assignment</h6>
+              </div>
+              <div class="right-content">
+                <img src="Arrow.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

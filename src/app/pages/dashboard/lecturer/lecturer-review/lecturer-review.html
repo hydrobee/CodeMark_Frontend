@@ -1,0 +1,56 @@
+<div class="dashboard-layout">
+  <app-sidebar-lecturer></app-sidebar-lecturer>
+  <div class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <div class="submission-logo">
+          <img src="Submission.png" alt="" />
+        </div>
+        <div class="welcome-section">
+          <h1>Pending AI Review</h1>
+        </div>
+      </div>
+      <div class="header-sections">
+        <button class="notification-btn">
+          <span class="bell">
+            <img src="Notification.png" alt="" />
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="state-message">Loading assignments with pending submissions...</div>
+
+      <!-- Error -->
+      <div *ngIf="error" class="state-message error">{{ error }}</div>
+
+      <!-- No assignments -->
+      <div *ngIf="!isLoading && !error && pendingAssignments.length === 0" class="state-message">
+        No assignments with pending AI feedback at the moment.
+      </div>
+
+      <!-- Assignment Cards -->
+      <div class="cards-container" *ngIf="!isLoading && pendingAssignments.length > 0">
+        <div class="cards-row" *ngFor="let assignment of pendingAssignments">
+          <div
+            class="cards-content"
+            (click)="navigateToAssignmentSubmissions(assignment.assignment_id)"
+            style="cursor: pointer"
+          >
+            <div class="left-content">
+              <h6>{{ assignment.course_name }} - {{ assignment.title }}</h6>
+              <p class="student-info">
+                <strong>Submissions Pending for Review:</strong> {{ assignment.pendingCount }}
+              </p>
+            </div>
+            <div class="right-content">
+              <img src="Arrow.png" alt="See more" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

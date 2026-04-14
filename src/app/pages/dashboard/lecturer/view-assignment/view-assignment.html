@@ -1,0 +1,56 @@
+<div class="dashboard-layout">
+  <div class="main-content">
+    <div class="page-header">
+      <div class="welcome-section">
+        <div class="back-icon" (click)="goBack()" style="cursor: pointer">
+          <img src="Back.png" alt="Back icon" />
+        </div>
+        <div class="page-title">
+          <h1>My Assignments</h1>
+        </div>
+      </div>
+      <button class="btn btn-approve" (click)="goToCreate()">+ Create Assignment</button>
+    </div>
+
+    <div *ngIf="isLoading" class="state-message">Loading assignments...</div>
+    <div *ngIf="errorMessage && !isLoading" class="state-message error">{{ errorMessage }}</div>
+
+    <div class="dashboard-content" *ngIf="!isLoading && !errorMessage">
+      <!-- Empty state -->
+      <div *ngIf="assignments.length === 0" class="cards-row">
+        <div class="cards-content">
+          <p>No assignments created yet.</p>
+          <button class="btn btn-approve" (click)="goToCreate()">
+            Create your first assignment
+          </button>
+        </div>
+      </div>
+
+      <!-- Assignment cards -->
+      <div class="cards-container" *ngIf="assignments.length > 0">
+        <div class="cards-row" *ngFor="let a of assignments">
+          <div class="cards-content">
+            <div class="left-content">
+              <h6>{{ a.course_name }} — {{ a.title }}</h6>
+
+              <div class="detail">
+                <p><strong>Description:</strong> {{ a.description }}</p>
+                <p>
+                  <strong>Deadline:</strong>
+                  <span [class.overdue-text]="isOverdue(a.deadline)">
+                    {{ formatDeadline(a.deadline) }}
+                    {{ isOverdue(a.deadline) ? '(Closed)' : '' }}
+                  </span>
+                </p>
+              </div>
+            </div>
+
+            <div class="right-content">
+              <img src="Arrow.png" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

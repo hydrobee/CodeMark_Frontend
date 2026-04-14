@@ -1,0 +1,124 @@
+<div class="dashboard-layout">
+  <app-sidebar-lecturer></app-sidebar-lecturer>
+
+  <div class="main-content">
+    <div class="page-header">
+      <div class="welcome-section">
+        <h1>Welcome, {{ userName }}!</h1>
+        <p class="subtitle">Lecturer Dashboard</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="notification-btn" (click)="navigate('/lecturer-notification')">
+          <span class="bell">
+            <img src="Notification.png" alt="" />
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!--Dashboard Content Boxes-->
+    <div class="dashboard-content">
+      <div class="first-row">
+        <!-- Pending Review -->
+        <div class="pending-review">
+          <div class="header">
+            <div class="title-section">
+              <h6>Pending Review</h6>
+            </div>
+            <div class="view-all" (click)="navigate('/lecturer-review')">
+              <p>View All</p>
+            </div>
+          </div>
+
+          <div class="button-layout">
+            <!-- Loading -->
+            <div *ngIf="loadingPending" class="loading-state">Loading pending reviews...</div>
+
+            <!-- Error -->
+            <div *ngIf="errorPending" class="error-state">{{ errorPending }}</div>
+
+            <!-- No pending -->
+            <div
+              *ngIf="!loadingPending && !errorPending && pendingAssignments.length === 0"
+              class="no-pending"
+            >
+              No pending reviews at the moment.
+            </div>
+
+            <!-- Assignment Cards -->
+            <div
+              class="content-button"
+              *ngFor="let assignment of pendingAssignments"
+              (click)="navigateToAssignmentSubmissionsDetails(assignment.assignment_id)"
+              style="cursor: pointer"
+            >
+              <p>
+                <strong>{{ assignment.course_name }} - {{ assignment.title }}</strong> <br />
+                Submissions Pending for Review: {{ assignment.pendingCount }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <!-- Performance -->
+        <div class="performance">
+          <div class="header">
+            <div class="title-section">
+              <h6> Average Student Performance</h6>
+            </div>
+            <div class="view-all" (click)="navigate('/lecturer-performance')">
+              <p>View All</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <div *ngIf="loadingPerformance" class="loading-state">Loading performance...</div>
+            <div *ngIf="errorPerformance" class="error-state">{{ errorPerformance }}</div>
+            <div
+              *ngIf="!loadingPerformance && !errorPerformance && performanceData.length === 0"
+              class="no-pending"
+            >
+              No performance data yet.
+            </div>
+            <app-chart
+              *ngIf="!loadingPerformance && !errorPerformance && performanceData.length > 0"
+              [performanceData]="performanceData"
+            ></app-chart>
+          </div>
+        </div>
+      </div>
+      <!--Assignment Management-->
+      <div class="assignment-management">
+        <div class="header">
+          <div class="title-section">
+            <h6>Assignment Management</h6>
+          </div>
+          <div class="view-all" (click)="navigate('/assignment-management')"><p>View All</p></div>
+        </div>
+        <div class="management-list">
+          <div class="button-layout-2">
+            <div class="left-section">
+              <div class="content-button" (click)="navigate('/create-assignment')">
+                <p>Create Assignment</p>
+                <img src="Arrow.png" alt="" />
+              </div>
+              <div class="content-button" (click)="navigate('/edit-assignment')">
+                <p>Edit Assignment</p>
+                <img src="Arrow.png" alt="" />
+              </div>
+            </div>
+            <div class="right-section">
+              <div class="content-button" (click)="navigate('/view-assignment')">
+                <p>View Assignment</p>
+                <img src="Arrow.png" alt="" />
+              </div>
+              <div class="content-button" (click)="navigate('/delete-assignment')">
+                <p>Delete Assignment</p>
+                <img src="Arrow.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

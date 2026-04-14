@@ -1,0 +1,126 @@
+<div class="dashboard-layout">
+  <!-- Sidebar -->
+  <app-sidebar></app-sidebar>
+
+  <!-- Main Content Area -->
+  <div class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="welcome-section">
+        <h1>Welcome, {{ userName }}!</h1>
+        <p class="subtitle">Student Dashboard</p>
+      </div>
+
+      <div class="header-actions">
+        <button class="notification-btn">
+          <span class="bell" (click)="navigate('/student-notification')"
+            ><img src="Notification.png" alt=""
+          /></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Content Boxes -->
+    <div class="dashboard-content">
+      <div class="first-row">
+        <!-- Pending Submission -->
+        <div class="pending-submission">
+          <div class="header">
+            <div class="title-section">
+              <h6>Pending Submission</h6>
+            </div>
+            <div class="view-all" (click)="navigate('/student-submission')">
+              <p>View All</p>
+            </div>
+          </div>
+
+          <div class="button-layout">
+            <!-- Loading -->
+            <div *ngIf="loading" class="loading-state">Loading pending submissions...</div>
+
+            <!-- Error -->
+            <div *ngIf="error" class="error-state" style="color: #ff6b6b; padding: 12px">
+              {{ error }}
+            </div>
+
+            <!-- No pending -->
+            <div *ngIf="!loading && !error && pendingAssignments.length === 0" class="no-pending">
+              No pending submissions at the moment.
+            </div>
+
+            <!-- Pending List -->
+            <div
+              class="content-button"
+              *ngFor="let assignment of pendingAssignments; trackBy: trackById"
+              (click)="navigateToAssignment(assignment.assignment_id || assignment.id)"
+              style="cursor: pointer"
+            >
+              <p>{{ assignment.course_name }} - {{ assignment.title || 'Untitled Assignment' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="performance">
+          <div class="header">
+            <div class="title-section"><h6>Performance</h6></div>
+            <div class="view-all" (click)="navigate('/student-performance')"><p>View All</p></div>
+          </div>
+
+          <div class="chart-container">
+            <div *ngIf="loadingPerformance" class="loading-state">Loading performance...</div>
+            <div *ngIf="errorPerformance" class="error-state">{{ errorPerformance }}</div>
+            <app-chart
+              *ngIf="!loadingPerformance && !errorPerformance"
+              [performanceData]="performanceData"
+            ></app-chart>
+          </div>
+        </div>
+      </div>
+
+      <div class="feedback-summary">
+        <div class="header">
+          <div class="title-section">
+            <h6>Feedback Summary</h6>
+          </div>
+          <div class="view-all" (click)="navigate('/student-feedback')">
+            <p>View All</p>
+          </div>
+        </div>
+
+        <div class="feedback-list">
+          <div class="button-layout">
+            <!--Loading-->
+            <div *ngIf="loadingFeedback">Loading feedback...</div>
+
+            <!--Error-->
+            <div *ngIf="errorFeedback" class="error-state">{{ errorFeedback }}</div>
+
+            <!--No feedback-->
+            <div
+              *ngIf="!loadingFeedback && !errorFeedback && feedbackList.length === 0"
+              class="no-pending"
+            >
+              No feedback yet.
+            </div>
+
+            <div *ngIf="!loadingFeedback && feedbackList.length > 0">
+              <div
+                class="content-button-2"
+                *ngFor="let fb of feedbackList"
+                (click)="navigateToFeedbackDetail(fb.submission_id)"
+                style="cursor: pointer"
+              >
+                <div class="1">
+                  <h6>{{ fb.course_name }} - {{ fb.title }}</h6>
+                </div>
+                <div class="2">
+                  <p><strong>Grade:</strong> {{ fb.grade ?? 'Not graded' }}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="chart-outer">
+  <div class="legend" *ngIf="performanceData.length > 0">
+    <span class="legend-dot green"></span><span>≥ 80 Good</span>
+    <span class="legend-dot yellow"></span><span>≥ 60 Average</span>
+    <span class="legend-dot red"></span><span>&lt; 60 Needs Work</span>
+  </div>
+
+  <div class="canvas-wrapper">
+    <canvas #chartCanvas></canvas>
+  </div>
+
+  <div class="empty-state" *ngIf="!performanceData || performanceData.length === 0">
+    No approved grades yet.
+  </div>
+</div>

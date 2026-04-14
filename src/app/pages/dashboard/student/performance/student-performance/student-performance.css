@@ -1,0 +1,162 @@
+/* Scrollbar (Chrome, Edge, Safari) */
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: #0b0f14;
+  border-radius: 10px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border-radius: 10px;
+  border: 2px solid #0b0f14;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: #4a5568;
+}
+
+/* Scrollbar (Firefox) */
+.main-content {
+  scrollbar-width: thin;
+  scrollbar-color: #2d3748 #0b0f14;
+}
+
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  color: #e2e8f0;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px 32px;
+  margin: 20px 20px 20px 0px;
+  overflow-y: auto;
+  background-color: #0b0f14;
+  border-radius: 20px;
+  border: 1px solid #454545;
+  height: calc(100vh - 40px);
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+  /* border-bottom: 1px solid #454545; */
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px; 
+}
+
+.submission-logo img {
+  width: 40px; 
+  height: auto;
+}
+
+.welcome-section h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+  color: #f8fafc;
+}
+
+.subtitle {
+  color: #94a3b8;
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Notification Button */
+.notification-btn {
+  background: #161b22;
+  border: 1px solid #454545;
+  width: 48px;
+  height: 48px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.notification-btn:hover {
+  background: #334155;
+  transform: scale(1.05);
+}
+
+.bell img {
+  width: 25px;
+  height: auto;
+}
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.chart-card {
+  background-color: #161b22;
+  border: 1px solid #454545;
+  border-radius: 20px;
+  padding: 24px;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.table-card {
+  background-color: #161b22;
+  border: 1px solid #454545;
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.table-card h6 {
+  color: #8690ff;
+  font-size: 1rem;
+  margin: 0 0 16px 0;
+}
+
+.score-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.score-table th {
+  text-align: left;
+  padding: 10px 16px;
+  color: #94a3b8;
+  border-bottom: 1px solid #454545;
+  font-weight: 600;
+}
+
+.score-table td {
+  padding: 12px 16px;
+  color: #e2e8f0;
+  border-bottom: 1px solid #1e293b;
+}
+
+.score-table tr:last-child td {
+  border-bottom: none;
+}
+
+.state-message {
+  color: #94a3b8;
+  padding: 24px;
+  text-align: center;
+}
+
+.state-message.error {
+  color: #f87171;
+}

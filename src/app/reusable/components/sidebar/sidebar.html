@@ -1,7 +1,7 @@
 <div class="sidebar">
 
   <!-- Logo -->
-  <div class="logo" (click)="navigate('/student')">
+  <div class="logo" (click)="navigate('/student-dashboard')">
     <div class="logo-icon">
       <img src="/CodeMark Logo.png" alt="CodeMark Logo">
     </div>
@@ -10,29 +10,29 @@
   <!-- Menu -->
   <div class="menu">
     <div class="menu-item" 
-         [class.active]="activeRoute === '/student'" 
-         (click)="navigate('/student')">
+         [class.active]="activeRoute === '/student-dashboard'" 
+         (click)="navigate('/student-dashboard')">
       <img src="/Dashboard.png" alt="Dashboard Icon" class="icon">
       <span>Dashboard</span>
     </div>
 
     <div class="menu-item" 
-         [class.active]="activeRoute === '/submission'" 
+         [class.active]="activeRoute === '/student-submission'" 
          (click)="navigate('/student-submission')">
       <img src="/Submission.png" alt="Submission Icon" class="icon">
       <span>Submission</span>
     </div>
 
     <div class="menu-item" 
-         [class.active]="activeRoute === '/feedback'" 
-         (click)="navigate('/feedback')">
+         [class.active]="activeRoute === '/student-feedback'" 
+         (click)="navigate('/student-feedback')">
       <img src="/Feedback.png" alt="Feedback Icon" class="icon">
       <span>Feedback</span>
     </div>
 
     <div class="menu-item" 
-         [class.active]="activeRoute === '/performance'" 
-         (click)="navigate('/performance')">
+         [class.active]="activeRoute === '/student-performance'" 
+         (click)="navigate('/student-performance')">
       <img src="/Performance.png" alt="Performance Icon" class="icon">
       <span>Performance</span>
     </div>

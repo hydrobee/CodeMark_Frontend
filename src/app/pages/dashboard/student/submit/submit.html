@@ -1,0 +1,147 @@
+<div class="dashboard-layout">
+  <div class="main-content">
+    <div class="page-header">
+      <div class="welcome-section">
+        <div class="back-icon" (click)="goBack()" style="cursor: pointer">
+          <img src="Back.png" alt="Back icon" />
+        </div>
+        <div class="page-title">
+          <h1>Submission</h1>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="isLoading" class="loading">Loading assignment...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div class="dasboard-content" *ngIf="!isLoading && !error && assignment">
+      <div class="cards-container">
+        <!-- Row 1: Assignment Title + Course -->
+        <div class="cards-row">
+          <div class="cards-content">
+            <div class="title">
+              <h6>{{ assignment.course_name }} - {{ assignment.title }}</h6>
+            </div>
+            <div class="detail">
+              <p>Opened:</p>
+              <p>Due: {{ assignment.deadline | date: 'mediumDate' }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 2: Description / Instructions -->
+        <div class="cards-row-2">
+          <div class="cards-content-2">
+            <div class="title">
+              <h6>Instructions</h6>
+            </div>
+            <div class="detail">
+              <p>{{ assignment.description }}</p>
+            </div>
+            <div class="assignment-file">
+              <div class="question" *ngIf="assignment?.question_file_path">
+                <a [href]="getFileUrl()" target="_blank">📄 Assignment Question</a>
+              </div>
+              <div class="rubric" *ngIf="assignment?.rubric_file_path">
+                <a [href]="getRubricUrl()" target="_blank">📋 Assignment Rubric</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: Submission Status -->
+        <div class="cards-row-3">
+          <div class="cards-content-3">
+            <div class="title">
+              <h6>Submission Status</h6>
+            </div>
+            <div class="detail-status">
+              <div class="left-detail">
+                <p>Group</p>
+                <p>Submission Status</p>
+                <p>Grading Status</p>
+              </div>
+              <div class="right-detail">
+                <p>{{ studentProfile?.group_no ?? 'N/A' }}</p>
+                <p>{{ assignment.submission_status }}</p>
+                <p>{{ assignment.grade }}</p>
+              </div>
+              <!-- <div class="submit-button" *ngIf="assignment.submission_status !== 'Submitted'">
+                <button (click)="openFileDialog()">Add Submission</button>
+              </div> -->
+              <div class="submit-button" *ngIf="assignment.submission_status === 'Submitted'">
+                <span class="submitted-badge">✓ Submitted</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 4: File Upload Panel (shown when not yet submitted) -->
+        <div class="cards-row-4" *ngIf="assignment.submission_status !== 'Submitted'">
+          <div class="cards-content-4">
+            <div class="title">
+              <h6>Upload File</h6>
+            </div>
+
+            <!-- Drop Zone -->
+            <div
+              class="drop-zone"
+              [class.drag-over]="isDragOver"
+              [class.file-selected]="selectedFile"
+              (click)="openFileDialog()"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop($event)"
+            >
+              <input
+                #fileInput
+                type="file"
+                accept=".py,.java,.cpp,.js,.c"
+                style="display: none"
+                (change)="onFileSelected($event)"
+              />
+
+              <div *ngIf="!selectedFile" class="drop-zone-placeholder">
+                <span class="upload-icon">📁</span>
+                <p>Drag & drop your file here or <strong>click to browse</strong></p>
+                <p class="file-hint">Accepted: .py, .java, .cpp, .js, .c</p>
+              </div>
+
+              <div *ngIf="selectedFile" class="file-preview">
+                <span class="file-icon">📄</span>
+                <div class="file-info">
+                  <p class="file-name">{{ selectedFile.name }}</p>
+                  <p class="file-size">{{ formatFileSize(selectedFile.size) }}</p>
+                </div>
+                <button class="remove-file" (click)="removeFile($event)">✕</button>
+              </div>
+            </div>
+
+            <!-- Upload error -->
+            <div class="upload-error" *ngIf="uploadError">{{ uploadError }}</div>
+
+            <!-- Submit button -->
+            <div class="upload-actions">
+              <button
+                class="btn-submit"
+                [disabled]="!selectedFile || isUploading"
+                (click)="submitAssignment()"
+              >
+                <span *ngIf="!isUploading">Submit Assignment</span>
+                <span *ngIf="isUploading">Uploading... {{ uploadProgress }}%</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Success message -->
+        <div class="cards-row-4" *ngIf="submitSuccess">
+          <div class="cards-content-4 success-panel">
+            <span class="success-icon">✅</span>
+            <p>Assignment submitted successfully! AI grading is in progress.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

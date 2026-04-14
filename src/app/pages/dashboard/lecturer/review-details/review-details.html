@@ -1,0 +1,49 @@
+<div class="dashboard-layout">
+  <div class="main-content">
+    <div class="page-header">
+      <div class="welcome-section">
+        <div class="back-icon" (click)="goBack()" style="cursor: pointer">
+          <img src="Back.png" alt="Back icon" />
+        </div>
+        <div class="page-title">
+          <h1>Pending Reviews</h1>
+          <p *ngIf="assignmentTitle" class="subtitle">{{ assignmentTitle }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <div *ngIf="isLoading" class="state-message">Loading pending submissions...</div>
+      
+      <div *ngIf="error" class="state-message error">{{ error }}</div>
+      
+      <div *ngIf="!isLoading && !error && pendingFeedbacks.length === 0" class="state-message">
+        No pending reviews for this assignment.
+      </div>
+
+      <div class="cards-container" *ngIf="!isLoading && pendingFeedbacks.length > 0">
+        <div 
+          class="cards-row" 
+          *ngFor="let fb of pendingFeedbacks"
+          (click)="navigateToFeedbackDetail(fb)"
+          style="cursor: pointer"
+        >
+          <div class="cards-content">
+            <div class="left-content">
+              <h6>{{ fb.student_name }}</h6>
+              <p class="student-info">
+                <strong>Submitted:</strong> {{ fb.submitted_at | date:'medium' }}
+              </p>
+              <p class="student-info" *ngIf="fb.group_no">
+                <strong>Group:</strong> {{ fb.group_no }}
+              </p>
+            </div>
+            <div class="right-content">
+              <img src="Arrow.png" alt="Review" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

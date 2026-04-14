@@ -1,0 +1,298 @@
+/* ── Layout (matches dashboard theme) ───────────────────────────────────── */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  color: #e2e8f0;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px 32px;
+  margin: 20px;
+  overflow-y: auto;
+  background-color: #0b0f14;
+  border-radius: 20px;
+  border: 1px solid #454545;
+  height: calc(100vh - 40px);
+  scrollbar-width: thin;
+  scrollbar-color: #2d3748 #0b0f14;
+  position: relative;
+}
+
+.main-content::-webkit-scrollbar { width: 10px; }
+.main-content::-webkit-scrollbar-track { background: #0b0f14; border-radius: 10px; }
+.main-content::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 10px; border: 2px solid #0b0f14; }
+.main-content::-webkit-scrollbar-thumb:hover { background: #4a5568; }
+
+/* ── Header ──────────────────────────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.back-icon { display: flex; align-items: center; flex-shrink: 0; }
+.back-icon img { width: 40px; height: 40px; object-fit: contain; }
+
+.page-title h1 {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0;
+  color: #f8fafc;
+  line-height: 1;
+}
+
+/* ── State messages ──────────────────────────────────────────────────────── */
+.state-message {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  padding: 12px 0;
+}
+
+.error-text { color: #f87171; }
+
+/* ── Cards ───────────────────────────────────────────────────────────────── */
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cards-row {
+  background-color: #161b22;
+  border: 1px solid #454545;
+  border-radius: 20px;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.cards-row:hover {
+  border-color: #8690ff44;
+  box-shadow: 0 6px 24px rgba(134, 144, 255, 0.07);
+}
+
+.cards-content {
+  background-color: #0b0f14;
+  border-radius: 16px;
+  padding: 20px 28px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ── Card internals ──────────────────────────────────────────────────────── */
+.card-top {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.course-badge {
+  background: rgba(134, 144, 255, 0.12);
+  color: #8690ff;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.deadline-label {
+  color: #64748b;
+  font-size: 0.8rem;
+}
+
+.assignment-title {
+  color: #f1f5f9;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.assignment-desc {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ── Card footer / delete button ─────────────────────────────────────────── */
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 8px;
+  border-top: 1px solid #1e2733;
+}
+
+.btn-delete {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(239, 68, 68, 0.08);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.btn-delete:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.18);
+  border-color: rgba(239, 68, 68, 0.5);
+  color: #fca5a5;
+}
+
+.btn-delete:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.trash-icon { font-size: 1rem; }
+
+/* ── Confirmation overlay ────────────────────────────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.popup {
+  background: #161b22;
+  border: 1px solid #454545;
+  border-radius: 20px;
+  padding: 36px 40px;
+  max-width: 460px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  text-align: center;
+  animation: slideUp 0.2s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+
+.popup-icon { font-size: 2.5rem; }
+
+.popup-title {
+  color: #f1f5f9;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.popup-body {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.popup-body strong { color: #e2e8f0; }
+
+.popup-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.btn-cancel {
+  flex: 1;
+  background: transparent;
+  color: #94a3b8;
+  border: 1px solid #454545;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-cancel:hover {
+  background: #1e2733;
+  color: #e2e8f0;
+}
+
+.btn-confirm {
+  flex: 1;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  border: none;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s, box-shadow 0.2s;
+}
+
+.btn-confirm:hover {
+  opacity: 0.88;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}
+
+/* ── Success toast ───────────────────────────────────────────────────────── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  color: #4ade80;
+  padding: 12px 28px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 2000;
+}
+
+.toast.toast-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+.success-popup {
+  border-color: rgba(74, 222, 128, 0.3);
+}

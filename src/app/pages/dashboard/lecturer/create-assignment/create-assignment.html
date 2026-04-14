@@ -1,0 +1,304 @@
+<div class="dashboard-layout">
+  <div class="main-content">
+    <!-- Header -->
+    <div class="page-header">
+      <div class="welcome-section">
+        <div class="back-icon" (click)="goBack()" style="cursor: pointer">
+          <img src="Back.png" alt="Back icon" />
+        </div>
+        <div class="page-title">
+          <h1>Create Assignment</h1>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <form (ngSubmit)="onSubmit()" #assignmentForm="ngForm">
+
+        <!-- Course Name -->
+        <div class="cards-row">
+          <div class="cards-content">
+            <div class="left-content full-width">
+              <h6>Course Name</h6>
+              <input
+                type="text"
+                name="course_name"
+                [(ngModel)]="assignment.course_name"
+                required
+                placeholder="e.g., Introduction to Programming"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Assignment Title -->
+        <div class="cards-row">
+          <div class="cards-content">
+            <div class="left-content full-width">
+              <h6>Assignment Title</h6>
+              <input
+                type="text"
+                name="title"
+                [(ngModel)]="assignment.title"
+                required
+                placeholder="e.g., Assignment 1: Basic Algorithms"
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Description -->
+        <div class="cards-row">
+          <div class="cards-content">
+            <div class="left-content full-width">
+              <h6>Description</h6>
+              <textarea
+                name="description"
+                [(ngModel)]="assignment.description"
+                required
+                rows="5"
+                placeholder="Provide detailed description..."
+                class="form-control"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Deadline -->
+        <div class="cards-row">
+          <div class="cards-content">
+            <div class="left-content full-width">
+              <h6>Deadline</h6>
+              <input
+                type="datetime-local"
+                name="deadline"
+                [(ngModel)]="assignment.deadline"
+                required
+                class="form-control"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Assignment Question File ──────────────────────────────────── -->
+        <div class="cards-row">
+          <div class="cards-content">
+            <div class="left-content full-width">
+              <h6>Assignment Question File <span class="optional-tag">Optional</span></h6>
+              <p class="field-hint">
+                Upload the assignment brief or question paper (PDF or DOCX).
+                The AI will use this to understand assignment objectives when grading submissions.
+              </p>
+
+              <div
+                class="upload-zone"
+                [class.has-file]="questionFile"
+                (click)="questionFileInput.click()"
+                (dragover)="onDragOver($event)"
+                (drop)="onDropQuestion($event)"
+              >
+                <input
+                  #questionFileInput
+                  type="file"
+                  accept=".pdf,.docx"
+                  style="display: none"
+                  (change)="onQuestionFileSelected($event)"
+                />
+
+                <ng-container *ngIf="!questionFile; else questionPreview">
+                  <div class="upload-icon">📄</div>
+                  <p class="upload-label">Click or drag &amp; drop to upload</p>
+                  <p class="upload-hint">PDF or DOCX, max 10 MB</p>
+                </ng-container>
+
+                <ng-template #questionPreview>
+                  <div class="file-preview">
+                    <span class="file-icon">{{ getFileIcon(questionFile!) }}</span>
+                    <div class="file-info">
+                      <span class="file-name">{{ questionFile!.name }}</span>
+                      <span class="file-size">{{ formatFileSize(questionFile!.size) }}</span>
+                    </div>
+                    <button
+                      type="button"
+                      class="remove-file-btn"
+                      (click)="removeQuestionFile($event)"
+                    >✕</button>
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Rubric ─────────────────────────────────────────────────────── -->
+        <div class="cards-row">
+          <div class="cards-content">
+            <div class="left-content full-width">
+              <h6>Rubric <span class="optional-tag">Optional</span></h6>
+              <p class="field-hint">
+                Upload a rubric file to auto-extract criteria, or fill in the criteria manually below.
+              </p>
+
+              <!-- ── Rubric file upload (always visible, moved to top) ── -->
+              <h6 class="sub-label">
+                Rubric Document <span class="optional-tag">Optional</span>
+              </h6>
+              <p class="field-hint">
+                Upload a PDF or DOCX rubric — criteria and weights will be extracted automatically.
+                If uploaded, the manual form below is not needed.
+              </p>
+
+              <div
+                class="upload-zone small"
+                [class.has-file]="rubricFile"
+                (click)="rubricFileInput.click()"
+                (dragover)="onDragOver($event)"
+                (drop)="onDropRubric($event)"
+              >
+                <input
+                  #rubricFileInput
+                  type="file"
+                  accept=".pdf,.docx"
+                  style="display: none"
+                  (change)="onRubricFileSelected($event)"
+                />
+
+                <ng-container *ngIf="!rubricFile; else rubricPreview">
+                  <div class="upload-icon">📋</div>
+                  <p class="upload-label">Click or drag &amp; drop</p>
+                  <p class="upload-hint">PDF or DOCX, max 10 MB</p>
+                </ng-container>
+
+                <ng-template #rubricPreview>
+                  <div class="file-preview">
+                    <span class="file-icon">{{ getFileIcon(rubricFile!) }}</span>
+                    <div class="file-info">
+                      <span class="file-name">{{ rubricFile!.name }}</span>
+                      <span class="file-size">{{ formatFileSize(rubricFile!.size) }}</span>
+                    </div>
+                    <button
+                      type="button"
+                      class="remove-file-btn"
+                      (click)="removeRubricFile($event)"
+                    >✕</button>
+                  </div>
+                </ng-template>
+              </div>
+
+              <!-- Extracted criteria preview shown after successful submit -->
+              <div *ngIf="rubricExtracted && rubricCriteria.length > 0" class="extracted-preview">
+                <p class="extract-success">✓ Criteria will be extracted from file on submit</p>
+              </div>
+
+              <!-- ── Divider ── -->
+              <div class="rubric-divider" *ngIf="!rubricFile">
+                <span>or fill in manually</span>
+              </div>
+
+              <!-- ── Manual criteria — hidden when rubric file is selected ── -->
+              <ng-container *ngIf="!rubricFile">
+
+                <div class="rubric-table">
+                  <div class="rubric-header">
+                    <span class="col-name">Criterion Name</span>
+                    <span class="col-weight">Weight (%)</span>
+                    <span class="col-action"></span>
+                  </div>
+
+                  <div
+                    class="rubric-row"
+                    *ngFor="let criterion of rubricCriteria; let i = index"
+                  >
+                    <input
+                      type="text"
+                      class="form-control col-name"
+                      [(ngModel)]="criterion.name"
+                      [name]="'criterionName_' + i"
+                      placeholder="e.g., Code Correctness"
+                    />
+                    <input
+                      type="number"
+                      class="form-control col-weight"
+                      [(ngModel)]="criterion.weight"
+                      [name]="'criterionWeight_' + i"
+                      min="1"
+                      max="100"
+                      placeholder="0"
+                      (ngModelChange)="onWeightChange()"
+                    />
+                    <button
+                      type="button"
+                      class="btn-remove-row"
+                      (click)="removeCriterion(i)"
+                      [disabled]="rubricCriteria.length === 1"
+                    >✕</button>
+                  </div>
+                </div>
+
+                <!-- Weight total indicator -->
+                <div
+                  class="weight-total"
+                  [class.valid]="totalWeight === 100"
+                  [class.invalid]="totalWeight !== 100 && rubricCriteria.length > 0"
+                >
+                  Total weight: <strong>{{ totalWeight }}%</strong>
+                  <span *ngIf="totalWeight === 100" class="check-icon">✓</span>
+                  <span *ngIf="totalWeight !== 100 && totalWeight > 0" class="warn-text">
+                    (must equal 100%)
+                  </span>
+                </div>
+
+                <!-- Add criterion button -->
+                <button
+                  type="button"
+                  class="btn btn-add-criterion"
+                  (click)="addCriterion()"
+                >
+                  + Add Criterion
+                </button>
+
+              </ng-container>
+              <!-- end manual criteria -->
+
+            </div>
+          </div>
+        </div>
+
+        <!-- Messages -->
+        <div *ngIf="successMessage" class="success-msg">{{ successMessage }}</div>
+        <div *ngIf="errorMessage"   class="error-msg">{{ errorMessage }}</div>
+
+        <!-- Step progress -->
+        <div *ngIf="isLoading && stepMessage" class="step-progress">
+          <div class="step-spinner"></div>
+          {{ stepMessage }}
+        </div>
+
+        <!-- Buttons -->
+        <div class="cards-row">
+          <div class="action-content">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="cancel()"
+              [disabled]="isLoading"
+            >
+              Cancel
+            </button>
+
+            <button
+              type="submit"
+              class="btn btn-approve"
+              [disabled]="isLoading || !isFormValid()"
+            >
+              {{ isLoading ? 'Creating...' : 'Create' }}
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

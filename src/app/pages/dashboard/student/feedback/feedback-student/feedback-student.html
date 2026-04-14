@@ -1,0 +1,69 @@
+<div class="dashboard-layout">
+  <app-sidebar></app-sidebar>
+
+  <div class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <div class="submission-logo">
+          <img src="Feedback.png" alt="Feedback Logo" />
+        </div>
+        <div class="welcome-section">
+          <h1>Feedback</h1>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button class="notification-btn" (click)="navigate('/student-notification')">
+          <span class="bell">
+            <img src="Notification.png" alt="" />
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="state-message">Loading feedback...</div>
+
+      <!-- Error -->
+      <div *ngIf="error" class="state-message error">{{ error }}</div>
+
+      <!-- No feedback -->
+      <div *ngIf="!isLoading && !error && feedbackList.length === 0" class="state-message">
+        No feedback available yet.
+      </div>
+
+      <!-- Feedback Cards -->
+      <div class="cards-container" *ngIf="!isLoading && feedbackList.length > 0">
+        <div class="cards-row" *ngFor="let fb of feedbackList">
+          <div
+            class="cards-content"
+            (click)="navigateToFeedbackDetail(fb.submission_id)"
+            style="cursor: pointer"
+          >
+            <div class="left-content">
+              <h6>{{ fb.course_name }} - {{ fb.title }}</h6>
+              <div class="due-date">
+                <p>
+                  <strong>Status:</strong>
+                  {{ fb.comments !== null ? 'Reviewed' : 'Pending Review' }}
+                </p>
+                <p>
+                  <strong>Grade: </strong>
+                  {{
+                    fb.grade !== 'Not Graded' && fb.grade !== null
+                      ? fb.grade + ' marks'
+                      : 'Not Graded'
+                  }}
+                </p>
+              </div>
+            </div>
+            <div class="right-content">
+              <img src="Arrow.png" alt="See more" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

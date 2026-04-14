@@ -1,0 +1,182 @@
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  color: #e2e8f0;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px 32px;
+  margin: 20px;
+  overflow-y: auto;
+  background-color: #0b0f14;
+  border-radius: 20px;
+  border: 1px solid #454545;
+  height: calc(100vh - 40px);
+  scrollbar-width: thin;
+  scrollbar-color: #2d3748 #0b0f14;
+}
+
+.main-content::-webkit-scrollbar {
+  width: 10px;
+}
+
+.main-content::-webkit-scrollbar-track {
+  background: #0b0f14;
+  border-radius: 10px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border-radius: 10px;
+  border: 2px solid #0b0f14;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background: #4a5568;
+}
+
+/* ── Page Header ─────────────────────────────────────────── */
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 32px;
+}
+
+.welcome-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+}
+
+.back-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.back-icon img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.page-title h1 {
+  font-size: 28px;
+  font-weight: 600;
+  color: #f8fafc;
+  margin: 0;
+  line-height: 1;
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.cards-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+
+.cards-row {
+  background-color: #161b22;
+  border: 1px solid #454545;
+  border-radius: 20px;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cards-row:hover {
+  transform: translateY(-2px);
+  border-color: #8690ff;
+  box-shadow: 0 10px 20px rgba(134, 144, 255, 0.1);
+}
+
+.cards-content {
+  background-color: #0b0f14;
+  border-radius: 16px;
+  padding: 20px 32px 20px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.cards-content h6 {
+  color: #8690ff;
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+/* ── Card Body ───────────────────────────────────────────── */
+
+.left-content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail {
+  display: flex;
+  flex-direction: row;
+  gap: 5rem;
+}
+
+.detail p {
+  margin: 0;
+  font-size: 14px;
+  color: #94a3b8;
+}
+
+.detail p strong {
+  color: #cbd5e1;
+}
+
+.overdue-text {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.right-content img {
+  width: 28px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+/* ── States ──────────────────────────────────────────────── */
+
+.state-message {
+  padding: 1rem;
+  color: #6b7280;
+}
+
+.state-message.error {
+  color: #dc2626;
+}
+
+/* ── Button ──────────────────────────────────────────────── */
+
+button {
+  color: white;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  padding: 8px 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+}

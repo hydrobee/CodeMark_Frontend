@@ -62,7 +62,7 @@
                 <p>Grading Status</p>
               </div>
               <div class="right-detail">
-                <p>{{ studentProfile?.group_no ?? 'N/A' }}</p>
+                <p>{{ groupNo || studentProfile?.group_no ?? 'N/A' }}</p>
                 <p>{{ assignment.submission_status }}</p>
                 <p>{{ assignment.grade }}</p>
               </div>
@@ -81,6 +81,18 @@
           <div class="cards-content-4">
             <div class="title">
               <h6>Upload File</h6>
+            </div>
+
+            <!-- Group Number Input -->
+            <div class="group-input">
+              <label for="groupNo">Group Number <span class="optional">(optional)</span></label>
+              <input
+                id="groupNo"
+                type="text"
+                [(ngModel)]="groupNo"
+                placeholder="e.g. G1, G2..."
+                class="group-input-field"
+              />
             </div>
 
             <!-- Drop Zone -->

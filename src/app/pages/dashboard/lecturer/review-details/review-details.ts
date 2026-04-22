@@ -54,7 +54,7 @@ export class ReviewDetails implements OnInit {
         console.log('Looking for assignment_id:', this.assignmentId);
 
         const forThisAssignment = submissions.filter(
-          (s: any) => Number(s.assignment_id) === this.assignmentId,
+          (s: any) => Number(s.assignment_id) === this.assignmentId && s.grade_status !== 'approved',
         );
 
         this.pendingFeedbacks = forThisAssignment.map((s: any) => ({

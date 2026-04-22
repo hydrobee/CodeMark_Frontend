@@ -1,0 +1,60 @@
+<div class="dashboard-layout">
+  <div class="main-content">
+    <div class="page-header">
+      <div class="welcome-section">
+        <div class="back-icon" (click)="goBack()" style="cursor: pointer">
+          <img src="Back.png" alt="Back icon" />
+        </div>
+        <div class="page-title">
+          <h1>Pending Lecturer Approvals</h1>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="loading" class="state-message">Loading pending lecturers...</div>
+    <div *ngIf="error && !loading" class="state-message error">{{ error }}</div>
+
+    <div class="dashboard-content" *ngIf="!loading && !error">
+
+      <!-- Empty state -->
+      <div *ngIf="lecturers.length === 0" class="empty-state">
+        <p>No pending lecturer approvals.</p>
+      </div>
+
+      <!-- Lecturer Cards -->
+      <div class="cards-container" *ngIf="lecturers.length > 0">
+        <div class="cards-row" *ngFor="let lecturer of lecturers">
+          <div class="cards-content">
+            <div class="left-content">
+              <h6>{{ lecturer.name }}</h6>
+              <p class="email">{{ lecturer.email }}</p>
+
+              <div class="detail">
+                <p><strong>Staff ID:</strong> {{ lecturer.staff_id }}</p>
+                <p>
+                  <strong>Status:</strong>
+                  <span class="status pending">Pending</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="right-content actions">
+              <button
+                class="btn approve"
+                [disabled]="actionLoading[lecturer.lecturer_id]"
+                (click)="updateStatus(lecturer.lecturer_id, 'approved')">
+                {{ actionLoading[lecturer.lecturer_id] ? 'Processing...' : 'Approve' }}
+              </button>
+              <button
+                class="btn reject"
+                [disabled]="actionLoading[lecturer.lecturer_id]"
+                (click)="updateStatus(lecturer.lecturer_id, 'rejected')">
+                {{ actionLoading[lecturer.lecturer_id] ? 'Processing...' : 'Reject' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

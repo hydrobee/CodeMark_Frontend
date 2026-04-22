@@ -1,5 +1,5 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
@@ -53,7 +53,6 @@ export class Api {
     return this.getWithErrorHandling('http://127.0.0.1:8000/student/my-submissions', 'Feedback');
   }
 
-  // In the Student Endpoints section
   getStudentFeedbackDetail(submissionId: number): Observable<any> {
     return this.getWithErrorHandling(
       `${this.baseUrl}/student/my-submissions`,
@@ -91,7 +90,6 @@ export class Api {
     );
   }
 
-  // NEW: Dedicated endpoint for single feedback review page (Recommended)
   getPendingFeedbackDetail(feedbackId: number): Observable<any> {
     return this.http
       .get<any>(`${this.baseUrl}/lecturer/pending/${feedbackId}`, {
@@ -112,7 +110,6 @@ export class Api {
   // ======================
   // Feedback Actions
   // ======================
-
   generateFeedback(submissionId: number): Observable<any> {
     return this.http
       .post<any>(
@@ -150,9 +147,7 @@ export class Api {
       .put<any>(
         `${this.baseUrl}/lecturer/approve/${feedbackId}`,
         {},
-        {
-          headers: this.getAuthHeaders(),
-        },
+        { headers: this.getAuthHeaders() },
       )
       .pipe(
         tap({
@@ -167,9 +162,7 @@ export class Api {
       .put<any>(
         `${this.baseUrl}/lecturer/reject/${feedbackId}`,
         {},
-        {
-          headers: this.getAuthHeaders(),
-        },
+        { headers: this.getAuthHeaders() },
       )
       .pipe(
         tap({
@@ -180,7 +173,45 @@ export class Api {
   }
 
   // ======================
-  // Private Helper Method (Reduces duplication)
+  // Admin Endpoints
+  // ======================
+  getSystemLogs(
+    filters: {
+      action?: string;
+      actor_id?: number;
+      target_type?: string;
+      status?: string;
+      from_date?: string;
+      to_date?: string;
+      limit?: number;
+      offset?: number;
+    } = {},
+  ): Observable<any> {
+    let params = new HttpParams();
+    if (filters.action) params = params.set('action', filters.action);
+    if (filters.actor_id) params = params.set('actor_id', filters.actor_id.toString());
+    if (filters.target_type) params = params.set('target_type', filters.target_type);
+    if (filters.status) params = params.set('status', filters.status);
+    if (filters.from_date) params = params.set('from_date', filters.from_date);
+    if (filters.to_date) params = params.set('to_date', filters.to_date);
+    if (filters.limit) params = params.set('limit', filters.limit.toString());
+    if (filters.offset) params = params.set('offset', filters.offset.toString());
+
+    return this.http
+      .get<any>(`${this.baseUrl}/admin/system-logs`, {
+        headers: this.getAuthHeaders(),
+        params,
+      })
+      .pipe(
+        catchError((err) => {
+          console.error('API Error in getSystemLogs:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  // ======================
+  // Private Helper Method
   // ======================
   private getWithErrorHandling(url: string, operation: string): Observable<any[]> {
     if (!isPlatformBrowser(this.platformId)) {
@@ -199,12 +230,12 @@ export class Api {
     );
   }
 
-  submitAssignment(assignmentId: number, formData: FormData) {
-    return this.http.post(
-      `${this.baseUrl}/student/submit-assignment?assignment_id=${assignmentId}`,
-      formData,
-      // Do NOT set Content-Type header — let the browser set multipart boundary automatically
-    );
+  submitAssignment(assignmentId: number, formData: FormData, groupNo?: string) {
+    let url = `${this.baseUrl}/student/submit-assignment?assignment_id=${assignmentId}`;
+    if (groupNo) {
+      url += `&group_no=${encodeURIComponent(groupNo)}`;
+    }
+    return this.http.post(url, formData, { headers: this.getAuthHeaders() });
   }
 
   deleteAssignment(assignmentId: number) {

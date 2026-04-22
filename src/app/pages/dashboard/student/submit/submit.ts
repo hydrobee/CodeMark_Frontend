@@ -12,10 +12,11 @@ import { Api } from '../../../../services/api';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { forkJoin } from 'rxjs';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-submit',
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './submit.html',
   styleUrl: './submit.css',
 })
@@ -26,6 +27,7 @@ export class Submit implements OnInit {
   studentProfile: any = null;
   isLoading = true;
   error: string | null = null;
+  groupNo: string = '';
 
   // File upload state
   selectedFile: File | null = null;
@@ -159,21 +161,27 @@ export class Submit implements OnInit {
     const formData = new FormData();
     formData.append('file', this.selectedFile, this.selectedFile.name);
 
-    this.api.submitAssignment(this.assignment.assignment_id, formData).subscribe({
-      next: () => {
-        this.isUploading = false;
-        this.submitSuccess = true;
-        this.selectedFile = null;
-        // Reflect the new status locally without re-fetching
-        this.assignment.submission_status = 'Submitted';
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        this.isUploading = false;
-        this.uploadError = err?.error?.detail ?? 'Submission failed. Please try again.';
-        this.cdr.detectChanges();
-      },
-    });
+    // Pass group_no as optional query param
+    this.api
+      .submitAssignment(
+        this.assignment.assignment_id,
+        formData,
+        this.groupNo.trim() || undefined, 
+      )
+      .subscribe({
+        next: () => {
+          this.isUploading = false;
+          this.submitSuccess = true;
+          this.selectedFile = null;
+          this.assignment.submission_status = 'Submitted';
+          this.cdr.detectChanges();
+        },
+        error: (err) => {
+          this.isUploading = false;
+          this.uploadError = err?.error?.detail ?? 'Submission failed. Please try again.';
+          this.cdr.detectChanges();
+        },
+      });
   }
 
   getFileUrl(): string {

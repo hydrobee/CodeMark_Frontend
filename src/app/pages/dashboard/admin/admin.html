@@ -1,1 +1,108 @@
-<p>admin works!</p>
+<div class="dashboard-layout">
+  <app-sidebar-admin></app-sidebar-admin>
+
+  <div class="main-content">
+    <div class="page-header">
+      <div class="welcome-section">
+        <h1>Welcome to Admin Dashboard!</h1>
+      </div>
+      <div class="header-actions">
+        <button class="notification-btn" (click)="navigate('/admin-notification')">
+          <div class="bell">
+            <img src="Notification.png" alt="Notification" />
+          </div>
+        </button>
+      </div>
+    </div>
+
+    <!-- Dashboard Content Boxes -->
+    <div class="dashboard-content">
+      <div class="dashboard-content">
+  <div class="first-row">
+
+    <!-- Manage Users -->
+    <div class="manage-users">
+      <div class="header">
+        <div class="title-section">
+          <h6>Manage Users</h6>
+        </div>
+        <div class="view-all" (click)="navigate('/manage-users')">
+          <p>View All</p>
+        </div>
+      </div>
+      <div class="management-list">
+        <div class="button-layout-2">
+          <div class="content-button" (click)="navigate('/all-users')">
+            <p>View All Users</p>
+            <img src="Arrow.png" alt="" />
+          </div>
+          <div class="content-button" (click)="navigate('/approve-lecturer')">
+            <p>Approve Lecturer</p>
+            <img src="Arrow.png" alt="" />
+          </div>
+          <div class="content-button" (click)="navigate('/reset-credential')">
+            <p>Reset Credential</p>
+            <img src="Arrow.png" alt="" />
+          </div>
+          <div class="content-button" (click)="navigate('/delete-user')">
+            <p>Delete User</p>
+            <img src="Arrow.png" alt="" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Log Preview -->
+    <div class="system-log">
+      <div class="header">
+        <div class="title-section">
+          <h6>Recent System Logs</h6>
+        </div>
+        <div class="view-all" (click)="navigate('/system-log')">
+          <p>View All</p>
+        </div>
+      </div>
+
+      <div class="log-list">
+        <!-- Loading State -->
+        <div *ngIf="isLoadingLogs" class="loading-logs">
+          <div class="spinner-small"></div>
+          <p>Loading recent logs...</p>
+        </div>
+
+        <!-- Logs List -->
+        <div *ngIf="!isLoadingLogs && recentLogs.length > 0">
+          <div *ngFor="let log of recentLogs" class="log-preview-item">
+            <div class="log-preview-left">
+              <span class="action-badge" [ngClass]="getActionBadgeClass(log.action)">
+                {{ log.action || 'Unknown Action' }}
+              </span>
+              <div class="log-detail">
+                <span class="log-actor">{{ log.actor_email || 'System' }}</span>
+                <span class="log-target">
+                  {{ log.target_type ? (log.target_type | titlecase) : '' }} 
+                  {{ log.target_id ? '#' + log.target_id : '' }}
+                </span>
+              </div>
+            </div>
+            <div class="log-preview-right">
+              <span class="log-time">{{ formatLogTime(log.created_at) }}</span>
+              <span class="status-pill" [ngClass]="getStatusClass(log.status)">
+                {{ log.status || '—' }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoadingLogs && recentLogs.length === 0" class="no-logs-placeholder">
+          <p>No recent activity found</p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+    </div>
+  </div>
+</div>

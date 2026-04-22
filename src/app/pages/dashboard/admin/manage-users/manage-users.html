@@ -1,0 +1,77 @@
+<div class="dashboard-layout">
+  <app-sidebar-admin></app-sidebar-admin>
+  <div class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <div class="management-logo">
+          <img src="Users.png" alt="" />
+        </div>
+        <div class="welcome-section">
+          <h1>Manage Users</h1>
+        </div>
+      </div>
+      <div class="header-sections">
+        <button class="notification-btn" (click)="navigate('/admin-notification')">
+          <span class="bell">
+            <img src="Notification.png" alt="" />
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="dashboard-content">
+      <div class="first-row">
+        <div class="cards-container-1">
+          <div class="cards-row" (click)="navigate('/all-users')" style="cursor: pointer">
+            <div class="cards-content">
+              <div class="left-content">
+                <h6>View All Users</h6>
+              </div>
+              <div class="right-content">
+                <img src="Arrow.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="cards-container-2">
+          <div class="cards-row" (click)="navigate('/approve-lecturer')" style="cursor: pointer">
+            <div class="cards-content">
+              <div class="left-content">
+                <h6>Approve Lecturer</h6>
+              </div>
+              <div class="right-content">
+                <img src="Arrow.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="second-row">
+        <div class="cards-container-3">
+            <div class="cards-row" (click)="navigate('/reset-credential')" style="cursor: pointer;">
+                <div class="cards-content">
+                    <div class="left-content">
+                        <h6>Reset Credential</h6>
+                    </div>
+                    <div class="right-content">
+                        <img src="Arrow.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="cards-container-4">
+            <div class="cards-row" (click)="navigate('/delete-user')" style="cursor: pointer;">
+                <div class="cards-content">
+                    <div class="left-content">
+                        <h6>Delete User</h6>
+                    </div>
+                    <div class="right-content">
+                        <img src="Arrow.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

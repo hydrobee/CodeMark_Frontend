@@ -20,6 +20,14 @@ import { CreateAssignmentComponent } from './pages/dashboard/lecturer/create-ass
 import { EditAssignment } from './pages/dashboard/lecturer/edit-assignment/edit-assignment';
 import { ViewAssignment } from './pages/dashboard/lecturer/view-assignment/view-assignment';
 import { DeleteAssignment } from './pages/dashboard/lecturer/delete-assignment/delete-assignment';
+import { ManageUsers } from './pages/dashboard/admin/manage-users/manage-users';
+import { SystemLog } from './pages/dashboard/admin/system-log/system-log';
+import { SystemData } from './pages/dashboard/admin/system-data/system-data';
+import { AdminNotification } from './pages/dashboard/admin/admin-notification/admin-notification';
+import { AllUsers } from './pages/dashboard/admin/all-users/all-users';
+import { ApproveLecturer } from './pages/dashboard/admin/approve-lecturer/approve-lecturer';
+import { ResetCredential } from './pages/dashboard/admin/reset-credential/reset-credential';
+import { DeleteUser } from './pages/dashboard/admin/delete-user/delete-user';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -44,5 +52,13 @@ export const routes: Routes = [
   { path: 'edit-assignment', component: EditAssignment },
   { path: 'view-assignment', component: ViewAssignment },
   { path: 'delete-assignment', component: DeleteAssignment },
+  { path: 'manage-users', component: ManageUsers},
+  { path: 'system-log', component: SystemLog},
+  { path: 'system-data', component: SystemData}, 
+  { path: 'admin-notification', component: AdminNotification },
+  { path: 'all-users', component: AllUsers},
+  { path: 'approve-lecturer', component: ApproveLecturer},
+  { path: 'reset-credential', component: ResetCredential},
+  { path: 'delete-user', component: DeleteUser},
   { path: '**', redirectTo: 'login' },
 ];

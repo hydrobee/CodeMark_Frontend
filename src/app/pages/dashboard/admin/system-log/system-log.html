@@ -1,0 +1,125 @@
+<div class="page-wrapper">
+  <app-sidebar-admin />
+
+  <main class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <h1 class="page-title">System Logs</h1>
+        <p class="page-subtitle">Audit trail of all administrator actions</p>
+      </div>
+      <div class="log-count" *ngIf="!isLoading">
+        <span class="count-number">{{ total }}</span>
+        <span class="count-label">total entries</span>
+      </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="filters-panel">
+      <div class="filters-grid">
+        <div class="filter-group">
+          <label class="filter-label">Action</label>
+          <select class="filter-select" [(ngModel)]="filterAction">
+            <option *ngFor="let opt of ACTION_OPTIONS" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Status</label>
+          <select class="filter-select" [(ngModel)]="filterStatus">
+            <option *ngFor="let opt of STATUS_OPTIONS" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">Target Type</label>
+          <select class="filter-select" [(ngModel)]="filterTargetType">
+            <option *ngFor="let opt of TARGET_OPTIONS" [value]="opt.value">{{ opt.label }}</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">From Date</label>
+          <input class="filter-input" type="datetime-local" [(ngModel)]="fromDate" />
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label">To Date</label>
+          <input class="filter-input" type="datetime-local" [(ngModel)]="toDate" />
+        </div>
+      </div>
+
+      <div class="filter-actions">
+        <button class="btn-clear" (click)="clearFilters()">Clear</button>
+        <button class="btn-apply" (click)="applyFilters()">Apply Filters</button>
+      </div>
+    </div>
+
+    <!-- Error -->
+    <div class="error-banner" *ngIf="error">
+      <span class="error-icon">⚠</span> {{ error }}
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Loading logs...</p>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrapper" *ngIf="!isLoading && !error">
+      <table class="log-table" *ngIf="logs.length > 0; else emptyState">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Timestamp</th>
+            <th>Actor</th>
+            <th>Action</th>
+            <th>Target</th>
+            <th>Detail</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs; let i = index" class="log-row">
+            <td class="col-id">{{ log.log_id }}</td>
+            <td class="col-date">{{ formatDate(log.created_at) }}</td>
+            <td class="col-actor">
+              <span class="actor-email">{{ log.actor_email || '—' }}</span>
+              <span class="actor-id" *ngIf="log.actor_id">ID: {{ log.actor_id }}</span>
+            </td>
+            <td class="col-action">
+              <span class="action-badge" [ngClass]="getActionBadgeClass(log.action)">
+                {{ log.action }}
+              </span>
+            </td>
+            <td class="col-target">
+              <span *ngIf="log.target_type" class="target-type">{{ log.target_type }}</span>
+              <span *ngIf="log.target_id" class="target-id">#{{ log.target_id }}</span>
+              <span *ngIf="!log.target_type && !log.target_id">—</span>
+            </td>
+            <td class="col-detail">{{ log.detail || '—' }}</td>
+            <td class="col-status">
+              <span class="status-pill" [ngClass]="getStatusClass(log.status)">
+                {{ log.status }}
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <ng-template #emptyState>
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p>No logs found matching your filters.</p>
+        </div>
+      </ng-template>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="!isLoading && total > limit">
+      <button class="page-btn" (click)="prevPage()" [disabled]="offset === 0">← Prev</button>
+      <span class="page-info">Page {{ currentPage }} of {{ totalPages }}</span>
+      <button class="page-btn" (click)="nextPage()" [disabled]="offset + limit >= total">Next →</button>
+    </div>
+  </main>
+</div>

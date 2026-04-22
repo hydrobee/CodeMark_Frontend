@@ -1,0 +1,103 @@
+<div class="dashboard-layout">
+  <div class="main-content">
+    <div class="page-header">
+      <div class="welcome-section">
+        <div class="back-icon" (click)="goBack()" style="cursor: pointer">
+          <img src="Back.png" alt="Back icon" />
+        </div>
+        <div class="page-title">
+          <h1>All Users</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search-box">
+        <input
+          type="text"
+          [(ngModel)]="search"
+          (ngModelChange)="onSearchInput()"
+          placeholder="Search by name or email..."
+          class="search-input"
+        />
+        <button (click)="onSearch()" class="btn">Search</button>
+      </div>
+
+      <select [(ngModel)]="roleFilter" (change)="onSearch()" class="role-filter">
+        <option value="">All Roles</option>
+        <option value="student">Students</option>
+        <option value="lecturer">Lecturers</option>
+        <option value="administrator">Administrators</option>
+      </select>
+    </div>
+
+    <div *ngIf="loading" class="state-message">Loading users...</div>
+    <div *ngIf="error && !loading" class="state-message error">{{ error }}</div>
+
+    <div class="dashboard-content" *ngIf="!loading && !error">
+      <!-- Empty state -->
+      <div *ngIf="users.length === 0" class="empty-state">
+        <p>No users found.</p>
+      </div>
+
+      <!-- User Cards -->
+      <div class="cards-container" *ngIf="users.length > 0">
+        <div class="cards-row" *ngFor="let user of users">
+          <div class="cards-content">
+            <div class="left-content">
+              <h6>{{ user.name }}</h6>
+              <p class="email">{{ user.email }}</p>
+
+              <div class="detail">
+                <p>
+                  <strong>Role:</strong>
+                  <span class="role-badge {{ user.role }}">{{ user.role | titlecase }}</span>
+                </p>
+
+                <p *ngIf="user.matric_no">
+                  <strong>Matric No:</strong> {{ user.matric_no }}
+                  <span *ngIf="user.group_no"> • Group {{ user.group_no }}</span>
+                </p>
+
+                <p *ngIf="user.staff_id">
+                  <strong>Staff ID:</strong> {{ user.staff_id }}
+                  <span *ngIf="user.status" class="status {{ user.status }}">
+                    • {{ user.status | titlecase }}
+                  </span>
+                </p>
+
+                <p *ngIf="user.created_at">
+                  <strong>Joined:</strong> {{ user.created_at | date: 'mediumDate' }}
+                </p>
+              </div>
+            </div>
+
+            <div class="right-content">
+              <img src="Arrow.png" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="total > limit">
+        <button [disabled]="offset === 0" (click)="changePage(offset - limit)" class="btn">
+          Previous
+        </button>
+
+        <span class="page-info">
+          Showing {{ offset + 1 }} to {{ getEndIndex() }} of {{ total }} users
+        </span>
+
+        <button
+          [disabled]="offset + limit >= total"
+          (click)="changePage(offset + limit)"
+          class="btn"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -23,14 +23,17 @@ export class Login {
 
   // student
   matricNo = '';
-  groupNo = '';
+  //groupNo = '';
 
   // lecturer
   staffId = '';
 
   errorMsg = '';
 
-  constructor(private api: Api, private router: Router) {}
+  constructor(
+    private api: Api,
+    private router: Router,
+  ) {}
 
   switchTab(tab: 'signup' | 'signin') {
     this.isLoginMode = tab === 'signin';
@@ -52,7 +55,7 @@ export class Login {
 
     if (this.role === 'student') {
       data.matric_no = this.matricNo;
-      data.group_no = this.groupNo;
+      //data.group_no = this.groupNo;
     }
 
     if (this.role === 'lecturer') {
@@ -64,7 +67,13 @@ export class Login {
         alert('Signup successful! Please login.');
         this.switchTab('signin');
       },
-      error: (err) => (this.errorMsg = err.error?.detail || 'Signup failed'),
+      error: (err) => {
+        if (err.status === 400 && err.error?.detail === 'Email already registered') {
+          alert('This email is already registered. Please login instead.');
+        } else {
+          this.errorMsg = err.error?.detail || 'Signup failed';
+        }
+      },
     });
   }
 

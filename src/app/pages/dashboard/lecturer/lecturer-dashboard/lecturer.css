@@ -115,8 +115,6 @@
   transition: all 0.3s ease; /* Nice hover effect */
 }
 
-
-
 .pending-review {
   background-color: #161b22;
   border: 1px solid #454545;
@@ -194,6 +192,33 @@
   display: flex;
   flex-direction: column;
   width: 50%;
+}
+
+.button-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 320px;      /* ← caps the list height */
+  overflow-y: auto;       /* ← makes it scroll independently */
+  padding-right: 6px;
+}
+
+.button-layout::-webkit-scrollbar {
+  width: 6px;
+}
+
+.button-layout::-webkit-scrollbar-track {
+  background: #161b22;
+  border-radius: 10px;
+}
+
+.button-layout::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border-radius: 10px;
+}
+
+.button-layout::-webkit-scrollbar-thumb:hover {
+  background: #4a5568;
 }
 
 .button-layout-2 {

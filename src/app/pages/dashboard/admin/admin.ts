@@ -18,7 +18,7 @@ export class Admin implements OnInit {
   constructor(
     private router: Router,
     private api: Api,
-    private cdr: ChangeDetectorRef     // ← This is required
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -32,29 +32,29 @@ export class Admin implements OnInit {
   loadRecentLogs(): void {
     this.isLoadingLogs = true;
 
-    this.api.getSystemLogs({ 
-      limit: 5, 
-      offset: 0 
+    this.api.getSystemLogs({
+      limit: 5,
+      offset: 0
     }).subscribe({
       next: (res) => {
         this.recentLogs = res.logs || [];
         this.isLoadingLogs = false;
-        this.cdr.detectChanges();           // ← Fix for NG0100
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Failed to load recent system logs:', err);
         this.recentLogs = [];
         this.isLoadingLogs = false;
-        this.cdr.detectChanges();           // ← Fix for NG0100
+        this.cdr.detectChanges();
       }
     });
   }
 
-  // Helper methods
   getActionBadgeClass(action: string): string {
     if (!action) return 'badge-default';
     const upper = action.toUpperCase();
     if (upper.includes('DELETE')) return 'badge-danger';
+    if (upper.includes('REGISTER')) return 'badge-success';        // ← Added
     if (upper.includes('APPROVE') || upper.includes('APPROVED')) return 'badge-success';
     if (upper.includes('REJECT') || upper.includes('REJECTED')) return 'badge-warning';
     if (upper.includes('BACKUP') || upper.includes('UPDATE')) return 'badge-info';

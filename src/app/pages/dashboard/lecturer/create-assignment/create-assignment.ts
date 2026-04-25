@@ -51,14 +51,11 @@ export class CreateAssignmentComponent implements OnInit {
 
   // ── File selections ──────────────────────────────────────────────────────
   questionFile: File | null = null;
-  rubricFile: File | null = null;
+  rubricFile: File | null = null; // reference only — never read by AI
 
-  // ── Rubric criteria ──────────────────────────────────────────────────────
+  // ── Rubric criteria (manual, used by AI) ─────────────────────────────────
   rubricCriteria: RubricCriterion[] = [{ name: '', weight: 0 }];
   totalWeight = 0;
-  rubricExtracted = false;
-  rubricFileUploading = false;
-  rubricExtractError = '';
 
   // ── UI state ─────────────────────────────────────────────────────────────
   isLoading = false;
@@ -75,13 +72,10 @@ export class CreateAssignmentComponent implements OnInit {
     const raw = localStorage.getItem('user');
     const currentUser = raw ? JSON.parse(raw) : null;
 
-    console.log('currentUser from localStorage:', currentUser); // debug — remove later
-
-    // Try all possible paths where lecturer_id might be stored
     const lecturerId =
-      currentUser?.role_data?.lecturer_id || // { role_data: { lecturer_id: X } }
-      currentUser?.lecturer_id || // { lecturer_id: X }
-      currentUser?.id || // { id: X }
+      currentUser?.role_data?.lecturer_id ||
+      currentUser?.lecturer_id ||
+      currentUser?.id ||
       0;
 
     if (lecturerId) {
@@ -91,10 +85,15 @@ export class CreateAssignmentComponent implements OnInit {
     }
   }
 
-  /** Attach Bearer token to every request */
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders({ Authorization: `Bearer ${token}` });
+  }
+
+  private getFileHeaders(): HttpHeaders {
+    return new HttpHeaders({
+      Authorization: `Bearer ${localStorage.getItem('token')}`,
+    });
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -111,7 +110,10 @@ export class CreateAssignmentComponent implements OnInit {
   }
 
   onWeightChange(): void {
-    this.totalWeight = this.rubricCriteria.reduce((sum, c) => sum + (Number(c.weight) || 0), 0);
+    this.totalWeight = this.rubricCriteria.reduce(
+      (sum, c) => sum + (Number(c.weight) || 0),
+      0,
+    );
   }
 
   /** True when criteria are partially filled but invalid */
@@ -123,11 +125,13 @@ export class CreateAssignmentComponent implements OnInit {
     return false;
   }
 
-  /** True when criteria are fully filled and valid */
+  /** True when all criteria are fully filled and weights sum to 100 */
   get rubricIsValid(): boolean {
     const hasAny = this.rubricCriteria.some((c) => c.name.trim() || c.weight > 0);
     if (!hasAny) return false;
-    return this.totalWeight === 100 && this.rubricCriteria.every((c) => c.name.trim());
+    return (
+      this.totalWeight === 100 && this.rubricCriteria.every((c) => c.name.trim())
+    );
   }
 
   // ════════════════════════════════════════════════════════════════════════
@@ -170,10 +174,7 @@ export class CreateAssignmentComponent implements OnInit {
 
   private setQuestionFile(file: File): void {
     const error = this.validateFile(file);
-    if (error) {
-      this.errorMessage = error;
-      return;
-    }
+    if (error) { this.errorMessage = error; return; }
     this.questionFile = file;
     this.errorMessage = '';
   }
@@ -183,7 +184,7 @@ export class CreateAssignmentComponent implements OnInit {
     this.questionFile = null;
   }
 
-  // ── Rubric file ──────────────────────────────────────────────────────────
+  // ── Rubric reference file ────────────────────────────────────────────────
   onRubricFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;
     if (!input.files?.length) return;
@@ -197,31 +198,16 @@ export class CreateAssignmentComponent implements OnInit {
     if (file) this.setRubricFile(file);
   }
 
-  private async setRubricFile(file: File): Promise<void> {
+  private setRubricFile(file: File): void {
     const error = this.validateFile(file);
-    if (error) {
-      this.errorMessage = error;
-      return;
-    }
-
+    if (error) { this.errorMessage = error; return; }
     this.rubricFile = file;
     this.errorMessage = '';
-    this.rubricExtractError = '';
-
-    // We need an assignment_id to call the extract endpoint.
-    // Since this is "create" flow, we extract AFTER assignment creation (see onSubmit).
-    // Just mark file selected — extraction happens in onSubmit step 2.5
-    this.rubricExtracted = false;
   }
 
   removeRubricFile(event: Event): void {
     event.stopPropagation();
     this.rubricFile = null;
-    this.rubricExtracted = false;
-    this.rubricExtractError = '';
-    // Restore blank manual criteria
-    this.rubricCriteria = [{ name: '', weight: 0 }];
-    this.totalWeight = 0;
   }
 
   onDragOver(event: DragEvent): void {
@@ -239,22 +225,22 @@ export class CreateAssignmentComponent implements OnInit {
       !!this.assignment.description.trim() &&
       !!this.assignment.deadline;
 
-    // If rubric FILE is selected → we don't need manual criteria
-    if (this.rubricFile) {
-      return baseValid;
-    }
+    // Partially-filled criteria must be completed before submitting
+    if (this.rubricHasErrors) return false;
 
-    // Manual rubric path → must be valid
-    return baseValid && this.rubricIsValid;
+    return baseValid;
   }
 
   // ════════════════════════════════════════════════════════════════════════
-  //  Submit — 4-step flow
+  //  Submit — up to 4 steps
   //
   //  Step 1: POST /lecturer/create-assignment
-  //  Step 2: POST /lecturer/assignment/:id/upload-question  (if file selected)
-  //  Step 3: POST /lecturer/assignment/:id/rubric           (if criteria valid)
-  //  Step 4: POST /lecturer/assignment/:id/rubric/upload    (if rubric file selected)
+  //  Step 2: POST /lecturer/assignment/:id/upload-question   (if selected)
+  //  Step 3: POST /lecturer/assignment/:id/rubric            (always runs if
+  //            criteria are valid OR a rubric file is selected, because
+  //            /rubric/upload requires the rubric DB record to exist first)
+  //  Step 4: POST /lecturer/assignment/:id/rubric/upload     (if file selected)
+  //            saves the file for student reference — AI never reads it
   // ════════════════════════════════════════════════════════════════════════
 
   async onSubmit(): Promise<void> {
@@ -272,18 +258,20 @@ export class CreateAssignmentComponent implements OnInit {
     const headers = this.getAuthHeaders();
 
     try {
-      // ── Step 1: Create assignment ─────────────────────────────
+      // ── Step 1: Create assignment ──────────────────────────────
       this.stepMessage = 'Creating assignment…';
 
       const created = await firstValueFrom(
-        this.http.post<AssignmentResponse>('/api/lecturer/create-assignment', this.assignment, {
-          headers,
-        }),
+        this.http.post<AssignmentResponse>(
+          '/api/lecturer/create-assignment',
+          this.assignment,
+          { headers },
+        ),
       );
 
       const assignmentId = created.assignment_id;
 
-      // ── Step 2: Upload question file ─────────────────────────
+      // ── Step 2: Upload question file (optional) ────────────────
       if (this.questionFile) {
         this.stepMessage = 'Uploading question file…';
 
@@ -291,52 +279,56 @@ export class CreateAssignmentComponent implements OnInit {
         qForm.append('file', this.questionFile);
 
         await firstValueFrom(
-          this.http.post(`/api/lecturer/assignment/${assignmentId}/upload-question`, qForm, {
-            headers: new HttpHeaders({
-              Authorization: `Bearer ${localStorage.getItem('token')}`,
-            }),
-          }),
+          this.http.post(
+            `/api/lecturer/assignment/${assignmentId}/upload-question`,
+            qForm,
+            { headers: this.getFileHeaders() },
+          ),
         );
       }
 
-      // ── Step 3: Handle Rubric (FIXED) ─────────────────────────────
-      if (this.rubricFile) {
-        // ── FILE PATH: Auto-extract criteria + save file
-        this.stepMessage = 'Extracting rubric criteria from file…';
+      // ── Step 3: Create rubric DB record ────────────────────────
+      // Always required when a rubric file is selected (the /rubric/upload
+      // endpoint does a 404 if no rubric record exists yet).
+      // Use the lecturer's manual criteria if valid, otherwise a placeholder
+      // that signals "criteria not yet set" — lecturer can edit later.
+      const needsRubricRecord = this.rubricIsValid || !!this.rubricFile;
 
-        const rForm = new FormData();
-        rForm.append('file', this.rubricFile);
+      if (needsRubricRecord) {
+        this.stepMessage = 'Saving rubric…';
 
-        const extracted = await firstValueFrom(
-          this.http.post<{ criteria: any[]; file_name: string }>(
-            `/api/lecturer/assignment/${assignmentId}/rubric/extract`,
-            rForm,
-            {
-              headers: new HttpHeaders({
-                Authorization: `Bearer ${localStorage.getItem('token')}`,
-              }),
-            },
-          ),
-        );
-
-        // Update UI with extracted criteria
-        this.rubricCriteria = extracted.criteria;
-        this.onWeightChange();
-        this.rubricExtracted = true;
-      } else if (this.rubricIsValid) {
-        // ── MANUAL PATH: Only save JSON criteria (no file)
-        this.stepMessage = 'Saving rubric criteria…';
+        const criteriaToSave = this.rubricIsValid
+          ? this.rubricCriteria
+          : [{ name: 'To be defined', weight: 100 }]; // placeholder
 
         await firstValueFrom(
           this.http.post(
             `/api/lecturer/assignment/${assignmentId}/rubric`,
-            { criteria: this.rubricCriteria },
+            { criteria: criteriaToSave },
             { headers },
           ),
         );
       }
 
-      // ── SUCCESS ──────────────────────────────────────────────
+      // ── Step 4: Upload rubric reference file (optional) ─────────
+      // Stored on disk for students to download.
+      // AI grading passes rubric_file_path=None so this is never read.
+      if (this.rubricFile) {
+        this.stepMessage = 'Uploading rubric reference file…';
+
+        const rForm = new FormData();
+        rForm.append('file', this.rubricFile);
+
+        await firstValueFrom(
+          this.http.post(
+            `/api/lecturer/assignment/${assignmentId}/rubric/upload`,
+            rForm,
+            { headers: this.getFileHeaders() },
+          ),
+        );
+      }
+
+      // ── SUCCESS ───────────────────────────────────────────────
       this.isLoading = false;
       this.stepMessage = '';
       this.successMessage = 'Assignment created successfully!';
@@ -349,12 +341,10 @@ export class CreateAssignmentComponent implements OnInit {
         description: '',
         deadline: '',
       };
-
       this.questionFile = null;
       this.rubricFile = null;
       this.rubricCriteria = [{ name: '', weight: 0 }];
       this.totalWeight = 0;
-      this.rubricExtracted = false;
 
       setTimeout(() => this.router.navigate(['/view-assignment']), 1500);
     } catch (error: any) {
@@ -368,7 +358,8 @@ export class CreateAssignmentComponent implements OnInit {
         this.errorMessage =
           'Permission denied. Make sure your lecturer profile is loaded correctly.';
       } else {
-        this.errorMessage = error?.error?.detail || 'Something went wrong. Please try again.';
+        this.errorMessage =
+          error?.error?.detail || 'Something went wrong. Please try again.';
       }
     }
   }

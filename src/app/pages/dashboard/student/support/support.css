@@ -1,0 +1,256 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Layout ──────────────────────────────────────────────── */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
+  color: #e2e8f0;
+  overflow: hidden;
+}
+
+.main-content {
+  flex: 1;
+  padding: 24px 32px;
+  margin: 20px 20px 20px 0;
+  overflow-y: auto;
+  background-color: #0b0f14;
+  border-radius: 20px;
+  border: 1px solid #454545;
+  height: calc(100vh - 40px);
+  scrollbar-width: thin;
+  scrollbar-color: #2d3748 #0b0f14;
+}
+
+.main-content::-webkit-scrollbar { width: 10px; }
+.main-content::-webkit-scrollbar-track { background: #0b0f14; border-radius: 10px; }
+.main-content::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 10px; border: 2px solid #0b0f14; }
+.main-content::-webkit-scrollbar-thumb:hover { background: #4a5568; }
+
+/* ── Page Header ─────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.submission-logo img {
+  width: 42px;
+  height: 42px;
+  object-fit: contain;
+}
+
+.welcome-section h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #f8fafc;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+
+.subtitle {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* ── Grid Layouts ────────────────────────────────────────── */
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.grid-full {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* ── Base Card ───────────────────────────────────────────── */
+.cards-row {
+  background-color: #161b22;
+  border: 1px solid #454545;
+  border-radius: 20px;
+  padding: 8px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.cards-row::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 20px 20px 0 0;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.cards-row:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+}
+
+.cards-row:hover::before {
+  opacity: 1;
+}
+
+/* ── Accent Colors ───────────────────────────────────────── */
+.accent-blue:hover { border-color: #38bdf8; box-shadow: 0 12px 30px rgba(56, 189, 248, 0.15); }
+.accent-blue::before { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+.accent-blue .card-icon { background: rgba(56, 189, 248, 0.1); color: #7dd3fc; }
+.accent-blue .pill-btn { background: rgba(56, 189, 248, 0.08); color: #7dd3fc; border-color: rgba(56, 189, 248, 0.2); }
+.accent-blue .pill-btn:hover { background: rgba(56, 189, 248, 0.1); border-color: rgba(56, 189, 248, 0.45); }
+.accent-blue .card-arrow { color: #38bdf8; }
+
+.accent-green:hover { border-color: #4ade80; box-shadow: 0 12px 30px rgba(74, 222, 128, 0.15); }
+.accent-green::before { background: linear-gradient(90deg, #16a34a, #4ade80); }
+.accent-green .card-icon { background: rgba(74, 222, 128, 0.1); color: #86efac; }
+.accent-green .pill-btn { background: rgba(74, 222, 128, 0.08); color: #86efac; border-color: rgba(74, 222, 128, 0.2); }
+.accent-green .pill-btn:hover { background: rgba(74, 222, 128, 0.1); border-color: rgba(74, 222, 128, 0.45); }
+
+.accent-red:hover { border-color: #f87171; box-shadow: 0 12px 30px rgba(248, 113, 113, 0.15); }
+.accent-red::before { background: linear-gradient(90deg, #dc2626, #f87171); }
+.accent-red .card-icon { background: rgba(248, 113, 113, 0.1); color: #fca5a5; }
+.accent-red .pill-btn { background: rgba(248, 113, 113, 0.08); color: #fca5a5; border-color: rgba(248, 113, 113, 0.2); }
+.accent-red .pill-btn:hover { background: rgba(248, 113, 113, 0.1); border-color: rgba(248, 113, 113, 0.45); }
+
+.accent-yellow:hover { border-color: #fbbf24; box-shadow: 0 12px 30px rgba(251, 191, 36, 0.15); }
+.accent-yellow::before { background: linear-gradient(90deg, #d97706, #fbbf24); }
+.accent-yellow .card-icon { background: rgba(251, 191, 36, 0.1); color: #fcd34d; }
+.accent-yellow .pill-btn { background: rgba(251, 191, 36, 0.08); color: #fcd34d; border-color: rgba(251, 191, 36, 0.2); }
+.accent-yellow .pill-btn:hover { background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.45); }
+.accent-yellow .card-arrow { color: #fbbf24; }
+
+/* ── Card Content ────────────────────────────────────────── */
+.cards-content {
+  background-color: #0b0f14;
+  border-radius: 14px;
+  padding: 24px 28px;
+  display: flex;
+  gap: 20px;
+  height: 100%;
+}
+
+.cards-content--horizontal {
+  flex-direction: row;
+  align-items: center;
+}
+
+.cards-content--vertical {
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+/* ── Card Icon ───────────────────────────────────────────── */
+.card-icon {
+  font-size: 1.6rem;
+  width: 54px;
+  height: 54px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon img {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+
+/* ── Card Body ───────────────────────────────────────────── */
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.card-body h6 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin: 0;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* ── Arrow ───────────────────────────────────────────────── */
+.card-arrow {
+  font-size: 1.3rem;
+  opacity: 0.4;
+  transition: opacity 0.2s, transform 0.2s;
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.cards-row:hover .card-arrow {
+  opacity: 1;
+  
+}
+
+.cards-row:hover {
+  transform: translateY(-2px);        /* matches your other pages */
+  box-shadow: 0 10px 20px rgba(134, 144, 255, 0.1);  /* default, overridden per accent */
+}
+
+/* ── Pill Buttons ────────────────────────────────────────── */
+.button-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.pill-btn {
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+
+.pill-btn--full {
+  width: 100%;
+  text-align: center;
+  padding: 9px 0;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: auto;
+}
+
+/* ── Responsive ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .main-content { padding: 16px; margin: 10px; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .cards-content--horizontal { flex-direction: column; }
+}

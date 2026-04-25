@@ -7,12 +7,17 @@
           <img src="Back.png" alt="Back icon" />
         </div>
         <div class="page-title">
-          <h1>Create Assignment</h1>
+          <h1>Edit Assignment</h1>
         </div>
       </div>
     </div>
 
-    <div class="dashboard-content">
+    <!-- Fetch loading / error -->
+    <div *ngIf="isFetching" class="state-message">Loading assignment...</div>
+    <div *ngIf="fetchError" class="state-message error-text">{{ fetchError }}</div>
+
+    <!-- Form -->
+    <div class="dashboard-content" *ngIf="!isFetching && !fetchError">
       <form (ngSubmit)="onSubmit()" #assignmentForm="ngForm">
 
         <!-- Course Name -->
@@ -88,9 +93,16 @@
             <div class="left-content full-width">
               <h6>Assignment Question File <span class="optional-tag">Optional</span></h6>
               <p class="field-hint">
-                Upload the assignment brief or question paper (PDF or DOCX).
+                Upload a new question file to replace the existing one (PDF or DOCX).
                 The AI will use this to understand assignment objectives when grading submissions.
               </p>
+
+              <!-- Existing file badge -->
+              <div class="existing-file-badge" *ngIf="existingQuestionFileName && !questionFile">
+                <span class="existing-icon">📄</span>
+                <span class="existing-label">Current file:</span>
+                <span class="existing-name">{{ existingQuestionFileName }}</span>
+              </div>
 
               <div
                 class="upload-zone"
@@ -109,7 +121,7 @@
 
                 <ng-container *ngIf="!questionFile; else questionPreview">
                   <div class="upload-icon">📄</div>
-                  <p class="upload-label">Click or drag &amp; drop to upload</p>
+                  <p class="upload-label">Click or drag &amp; drop to replace</p>
                   <p class="upload-hint">PDF or DOCX, max 10 MB</p>
                 </ng-container>
 
@@ -138,9 +150,8 @@
             <div class="left-content full-width">
               <h6>Rubric <span class="optional-tag">Optional</span></h6>
 
-              <!-- Manual criteria — used by AI for grading -->
               <p class="field-hint">
-                Enter your grading criteria and weights below.
+                Update your grading criteria and weights below.
                 These values are used by the AI to grade student submissions.
               </p>
 
@@ -202,15 +213,22 @@
                 + Add Criterion
               </button>
 
-              <!-- Rubric reference file — for students only, not used by AI -->
+              <!-- Rubric reference file -->
               <div class="rubric-divider">
                 <span>Rubric Reference File <span class="optional-tag">Optional</span></span>
               </div>
               <p class="field-hint">
-                Upload a rubric document (PDF or DOCX) for students to view and download.
+                Upload a new rubric document to replace the existing one (PDF or DOCX).
                 <strong>This file is not used by the AI</strong> — grading is based solely on
                 the criteria entered above.
               </p>
+
+              <!-- Existing rubric file badge -->
+              <div class="existing-file-badge" *ngIf="existingRubricFileName && !rubricFile">
+                <span class="existing-icon">📋</span>
+                <span class="existing-label">Current file:</span>
+                <span class="existing-name">{{ existingRubricFileName }}</span>
+              </div>
 
               <div
                 class="upload-zone small"
@@ -229,7 +247,7 @@
 
                 <ng-container *ngIf="!rubricFile; else rubricPreview">
                   <div class="upload-icon">📋</div>
-                  <p class="upload-label">Click or drag &amp; drop</p>
+                  <p class="upload-label">Click or drag &amp; drop to replace</p>
                   <p class="upload-hint">PDF or DOCX, max 10 MB</p>
                 </ng-container>
 
@@ -280,7 +298,7 @@
               class="btn btn-approve"
               [disabled]="isLoading || !isFormValid()"
             >
-              {{ isLoading ? 'Creating...' : 'Create' }}
+              {{ isLoading ? 'Saving...' : 'Save Changes' }}
             </button>
           </div>
         </div>

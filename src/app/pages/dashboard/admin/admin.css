@@ -310,6 +310,25 @@
   gap: 16px;
   overflow-y: auto;
   padding-right: 6px;
+  max-height: 320px;
+}
+
+.log-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.log-list::-webkit-scrollbar-track {
+  background: #161b22;
+  border-radius: 10px;
+}
+
+.log-list::-webkit-scrollbar-thumb {
+  background: #2d3748;
+  border-radius: 10px;
+}
+
+.log-list::-webkit-scrollbar-thumb:hover {
+  background: #4a5568;
 }
 
 /* Log Preview Item */

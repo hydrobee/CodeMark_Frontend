@@ -1,5 +1,5 @@
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
@@ -16,7 +16,7 @@ export class Api {
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
-  private getAuthHeaders() {
+  private getAuthHeaders(): { [header: string]: string } {
     const token = localStorage.getItem('token');
     if (!token) {
       throw new Error('No authentication token found');
@@ -74,6 +74,175 @@ export class Api {
 
   // ======================
   // Lecturer Endpoints
+  // ======================
+  getMyAssignments(): Observable<any[]> {
+    return this.http
+      .get<any[]>(`${this.baseUrl}/lecturer/my-assignments`, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        tap({
+          next: (res) => console.log('My assignments:', res),
+          error: (err) => console.error('My assignments error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in getMyAssignments:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  getAssignment(assignmentId: number): Observable<any> {
+    return this.http
+      .get<any>(`${this.baseUrl}/lecturer/assignment/${assignmentId}`, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        tap({
+          next: (res) => console.log('Assignment detail:', res),
+          error: (err) => console.error('Get assignment error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in getAssignment:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  createAssignment(data: any): Observable<any> {
+    return this.http
+      .post<any>(`${this.baseUrl}/lecturer/create-assignment`, data, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        tap({
+          next: (res) => console.log('Assignment created:', res),
+          error: (err) => console.error('Create assignment error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in createAssignment:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  updateAssignment(assignmentId: number, data: any): Observable<any> {
+    return this.http
+      .put<any>(`${this.baseUrl}/lecturer/update-assignment/${assignmentId}`, data, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        tap({
+          next: (res) => console.log('Assignment updated:', res),
+          error: (err) => console.error('Update assignment error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in updateAssignment:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  deleteAssignment(assignmentId: number): Observable<any> {
+    return this.http
+      .delete<any>(`${this.baseUrl}/lecturer/delete-assignment/${assignmentId}`, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        tap({
+          next: () => console.log(`Assignment ${assignmentId} deleted`),
+          error: (err) => console.error('Delete assignment error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in deleteAssignment:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  uploadQuestionFile(assignmentId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http
+      .post<any>(
+        `${this.baseUrl}/lecturer/assignment/${assignmentId}/upload-question`,
+        formData,
+        { headers: this.getAuthHeaders() },
+      )
+      .pipe(
+        tap({
+          next: (res) => console.log('Question file uploaded:', res),
+          error: (err) => console.error('Upload question file error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in uploadQuestionFile:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  // ======================
+  // Rubric Endpoints
+  // ======================
+  getRubric(assignmentId: number): Observable<any> {
+    return this.http
+      .get<any>(`${this.baseUrl}/lecturer/assignment/${assignmentId}/rubric`, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        tap({
+          next: (res) => console.log('Rubric:', res),
+          error: (err) => console.error('Get rubric error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in getRubric:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  saveRubric(assignmentId: number, data: { criteria: { name: string; weight: number }[] }): Observable<any> {
+    return this.http
+      .post<any>(
+        `${this.baseUrl}/lecturer/assignment/${assignmentId}/rubric`,
+        data,
+        { headers: this.getAuthHeaders() },
+      )
+      .pipe(
+        tap({
+          next: (res) => console.log('Rubric saved:', res),
+          error: (err) => console.error('Save rubric error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in saveRubric:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  uploadRubricFile(assignmentId: number, file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file);
+    return this.http
+      .post<any>(
+        `${this.baseUrl}/lecturer/assignment/${assignmentId}/rubric/upload`,
+        formData,
+        { headers: this.getAuthHeaders() },
+      )
+      .pipe(
+        tap({
+          next: (res) => console.log('Rubric file uploaded:', res),
+          error: (err) => console.error('Upload rubric file error:', err),
+        }),
+        catchError((err) => {
+          console.error('API Error in uploadRubricFile:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  // ======================
+  // Lecturer Feedback & Submissions
   // ======================
   getLecturerPendingFeedback(): Observable<any[]> {
     return this.getWithErrorHandling(`${this.baseUrl}/lecturer/pending`, 'Pending feedback');
@@ -211,6 +380,17 @@ export class Api {
   }
 
   // ======================
+  // Student Submit
+  // ======================
+  submitAssignment(assignmentId: number, formData: FormData, groupNo?: string): Observable<any> {
+    let url = `${this.baseUrl}/student/submit-assignment?assignment_id=${assignmentId}`;
+    if (groupNo) {
+      url += `&group_no=${encodeURIComponent(groupNo)}`;
+    }
+    return this.http.post(url, formData, { headers: this.getAuthHeaders() });
+  }
+
+  // ======================
   // Private Helper Method
   // ======================
   private getWithErrorHandling(url: string, operation: string): Observable<any[]> {
@@ -228,21 +408,5 @@ export class Api {
         return throwError(() => err);
       }),
     );
-  }
-
-  submitAssignment(assignmentId: number, formData: FormData, groupNo?: string) {
-    let url = `${this.baseUrl}/student/submit-assignment?assignment_id=${assignmentId}`;
-    if (groupNo) {
-      url += `&group_no=${encodeURIComponent(groupNo)}`;
-    }
-    return this.http.post(url, formData, { headers: this.getAuthHeaders() });
-  }
-
-  deleteAssignment(assignmentId: number) {
-    return this.http.delete(`${this.baseUrl}/lecturer/delete-assignment/${assignmentId}`);
-  }
-
-  getMyAssignments() {
-    return this.http.get<any[]>(`${this.baseUrl}/lecturer/my-assignments`);
   }
 }

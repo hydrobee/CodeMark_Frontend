@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="page-header">
       <div class="welcome-section">
-        <div class="back-icon" (click)="goBack()" style="cursor: pointer">
+        <div class="back-icon" (click)="goBack()">
           <img src="Back.png" alt="Back icon" />
         </div>
         <div class="page-title">
@@ -13,9 +13,8 @@
     </div>
 
     <div class="dashboard-content">
-      <!-- States -->
       <div *ngIf="isLoading" class="state-message">Loading submission...</div>
-      <div *ngIf="error" class="state-message error">{{ error }}</div>
+      <div *ngIf="error" class="state-message error-text">{{ error }}</div>
 
       <ng-container *ngIf="!isLoading && !error">
         <!-- Student Info -->
@@ -23,51 +22,51 @@
           <div class="cards-content">
             <div class="left-content">
               <h6>{{ submission?.student_name || submission?.student_id }}</h6>
-              <p class="student-info">
-                <strong>Assignment:</strong>
-                {{ submission?.course_name }} — {{ submission?.title }}
-              </p>
-              <p class="student-info">
-                <strong>Submitted:</strong>
-                {{ submission?.submitted_at | date: 'medium' }}
-              </p>
-              <p class="student-info" *ngIf="submission?.group_no">
-                <strong>Group:</strong> {{ submission?.group_no }}
-              </p>
+              <div class="detail">
+                <p>
+                  <strong>Assignment:</strong> {{ submission?.course_name }} —
+                  {{ submission?.title }}
+                </p>
+                <p><strong>Submitted:</strong> {{ submission?.submitted_at | date: 'medium' }}</p>
+                <p *ngIf="submission?.group_no">
+                  <strong>Group:</strong> {{ submission?.group_no }}
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- File -->
+        <!-- Submitted File -->
         <div class="cards-row">
           <div class="cards-content">
             <div class="left-content">
               <h6>Submitted File</h6>
-              <p class="student-info">{{ submission?.file_name }}</p>
+              <div class="detail">
+                <p>{{ submission?.file_name }}</p>
+              </div>
             </div>
             <div class="right-content">
-              <a
-                class="btn btn-download"
-                [href]="getFileUrl(submission?.file_path)"
-                target="_blank"
-              >
-                View
+              <a class="btn btn-view" [href]="getFileUrl(submission?.file_path)" target="_blank">
+                View File
               </a>
             </div>
           </div>
         </div>
 
-        <!-- AI Feedback -->
+        <!-- AI Analysis -->
         <div class="cards-row">
           <div class="cards-content">
             <div class="left-content">
               <h6>AI Analysis</h6>
-              <p class="student-info"><strong>Grade:</strong> {{ feedback?.grade ?? '—' }}</p>
-              <p class="student-info"><strong>Comments:</strong> {{ feedback?.comments }}</p>
-              <p class="student-info"><strong>Strengths:</strong> {{ feedback?.strengths }}</p>
-              <p class="student-info">
-                <strong>Improvement:</strong> {{ feedback?.areas_for_improvement }}
-              </p>
+              <div class="detail">
+                <p>
+                  <strong>Grade:</strong>
+                  <span class="grade-badge">{{ feedback?.grade ?? '—' }}%</span>
+                </p>
+                <p><strong>Comments:</strong> {{ feedback?.comments }}</p>
+                <p><strong>Strengths:</strong> {{ feedback?.strengths }}</p>
+                <p><strong>Improvement:</strong> {{ feedback?.areas_for_improvement }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -75,7 +74,7 @@
         <!-- Rubric Breakdown -->
         <div class="cards-row" *ngIf="feedback?.rubric_scores?.length">
           <div class="cards-content">
-            <div class="left-content">
+            <div class="left-content full-width">
               <h6>Marks Breakdown</h6>
               <div class="rubric-table">
                 <div class="rubric-header">
@@ -86,11 +85,14 @@
                 <div class="rubric-row" *ngFor="let item of feedback.rubric_scores">
                   <span class="criterion-name">{{ item.name }}</span>
                   <span class="criterion-score">{{ item.score }}</span>
-                  <span class="criterion-max">/ {{ item.weight }}</span>
+                  <span class="criterion-max">{{ item.weight }}</span>
                 </div>
                 <div class="rubric-total">
                   <span>Total</span>
-                  <span>{{ feedback.grade }} / {{ getTotalMarks() }}</span>
+                  <span
+                    >{{ feedback.grade }}% ({{ feedback.obtained ?? getTotalMarks() }} /
+                    {{ getTotalMarks() }} pts)</span
+                  >
                 </div>
               </div>
             </div>
@@ -99,40 +101,70 @@
 
         <!-- Lecturer Feedback -->
         <div class="cards-row">
-          <div class="cards-content">
-            <div class="left-content">
+          <div class="cards-content cards-content--top">
+            <div class="left-content full-width">
               <h6>Lecturer Feedback</h6>
 
               <!-- Read Mode -->
               <ng-container *ngIf="!isEditing">
-                <p class="student-info" *ngIf="!feedback?.comments">
-                  No edits made — AI feedback will be used.
-                </p>
-
-                <ng-container *ngIf="feedback?.comments">
-                  <p class="student-info"><strong>Comments:</strong> {{ draft.comments }}</p>
-                  <p class="student-info"><strong>Strengths:</strong> {{ draft.strengths }}</p>
-                  <p class="student-info">
-                    <strong>Improvement:</strong> {{ draft.areas_for_improvement }}
+                <div class="detail">
+                  <p *ngIf="!feedback?.comments" class="muted">
+                    No edits made — AI feedback will be used.
                   </p>
-                  <p class="student-info"><strong>Grade:</strong> {{ draft.grade }}</p>
-                </ng-container>
+                  <ng-container *ngIf="feedback?.comments">
+                    <p><strong>Comments:</strong> {{ draft.comments }}</p>
+                    <p><strong>Strengths:</strong> {{ draft.strengths }}</p>
+                    <p><strong>Improvement:</strong> {{ draft.areas_for_improvement }}</p>
+                    <p><strong>Grade:</strong> {{ draft.grade }}%</p>
+                  </ng-container>
+                </div>
               </ng-container>
 
               <!-- Edit Mode -->
               <ng-container *ngIf="isEditing">
-                <textarea [(ngModel)]="draft.comments" rows="3"></textarea>
-                <textarea [(ngModel)]="draft.strengths" rows="2"></textarea>
-                <textarea [(ngModel)]="draft.areas_for_improvement" rows="2"></textarea>
-                <input type="number" [(ngModel)]="draft.grade" min="0" max="100" />
-
-                <button class="btn btn-save" (click)="saveEdit()" [disabled]="isSaving">
-                  {{ isSaving ? 'Saving...' : 'Save' }}
-                </button>
+                <div class="edit-form">
+                  <div class="form-group">
+                    <label>Comments</label>
+                    <textarea
+                      [(ngModel)]="draft.comments"
+                      rows="3"
+                      placeholder="Enter comments..."
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Strengths</label>
+                    <textarea
+                      [(ngModel)]="draft.strengths"
+                      rows="2"
+                      placeholder="Enter strengths..."
+                    ></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label>Areas for Improvement</label>
+                    <textarea
+                      [(ngModel)]="draft.areas_for_improvement"
+                      rows="2"
+                      placeholder="Enter improvements..."
+                    ></textarea>
+                  </div>
+                  <div class="form-group form-group--inline">
+                    <label>Grade (%)</label>
+                    <input
+                      type="number"
+                      [(ngModel)]="draft.grade"
+                      min="0"
+                      max="100"
+                      placeholder="0–100"
+                    />
+                  </div>
+                  <button class="btn btn-save" (click)="saveEdit()" [disabled]="isSaving">
+                    {{ isSaving ? 'Saving...' : 'Save Changes' }}
+                  </button>
+                </div>
               </ng-container>
             </div>
 
-            <div class="right-content">
+            <div class="right-content right-content--top">
               <button class="btn btn-edit" (click)="toggleEdit()">
                 {{ isEditing ? 'Cancel' : 'Edit' }}
               </button>
@@ -140,24 +172,22 @@
           </div>
         </div>
 
-        <!-- Actions -->
+        <!-- Final Decision -->
         <div class="cards-row">
           <div class="cards-content">
             <div class="left-content">
               <h6>Final Decision</h6>
-              <p class="success-msg" *ngIf="successMsg">{{ successMsg }}</p>
-              <p class="error-msg" *ngIf="actionError">{{ actionError }}</p>
+              <p class="success-msg" *ngIf="successMsg">✅ {{ successMsg }}</p>
+              <p class="error-msg" *ngIf="actionError">❌ {{ actionError }}</p>
             </div>
-
-            <div class="right-content">
+            <div class="right-content action-buttons">
               <button
                 class="btn btn-approve"
                 (click)="approve()"
                 [disabled]="isActioning || feedback?.status === 'approved'"
               >
-                {{ feedback?.status === 'approved' ? 'Approved' : 'Approve' }}
+                {{ feedback?.status === 'approved' ? '✓ Approved' : 'Approve' }}
               </button>
-
               <button
                 class="btn btn-reject"
                 (click)="reject()"

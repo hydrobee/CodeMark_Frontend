@@ -23,7 +23,6 @@ export class Login {
 
   // student
   matricNo = '';
-  //groupNo = '';
 
   // lecturer
   staffId = '';
@@ -55,7 +54,6 @@ export class Login {
 
     if (this.role === 'student') {
       data.matric_no = this.matricNo;
-      //data.group_no = this.groupNo;
     }
 
     if (this.role === 'lecturer') {
@@ -63,9 +61,27 @@ export class Login {
     }
 
     this.api.register(data).subscribe({
-      next: () => {
-        alert('Signup successful! Please login.');
-        this.switchTab('signin');
+      next: (res) => {
+        if (this.role === 'lecturer') {
+          // ✅ Lecturer needs approval — just switch to sign in with a message
+          alert('Registration successful! Your account is pending admin approval before you can log in.');
+          this.switchTab('signin');
+          return;
+        }
+
+        // ✅ Student — auto login then redirect to dashboard
+        this.api.login(this.email, this.password).subscribe({
+          next: (loginRes) => {
+            localStorage.setItem('token', loginRes.access_token);
+            localStorage.setItem('user', JSON.stringify(loginRes.user));
+            this.router.navigate(['/student-dashboard']);
+          },
+          error: () => {
+            // Fallback: auto-login failed, send them to sign in manually
+            alert('Account created! Please sign in.');
+            this.switchTab('signin');
+          }
+        });
       },
       error: (err) => {
         if (err.status === 400 && err.error?.detail === 'Email already registered') {

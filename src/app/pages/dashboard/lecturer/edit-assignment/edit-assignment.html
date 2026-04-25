@@ -1,1 +1,45 @@
-<p>edit-assignment works!</p>
+<div class="dashboard-layout">
+  <div class="main-content">
+    <!-- Header -->
+    <div class="page-header">
+      <div class="welcome-section">
+        <div class="back-icon" (click)="goBack()" style="cursor: pointer">
+          <img src="Back.png" alt="Back icon" />
+        </div>
+        <div class="page-title">
+          <h1>Edit Assignment</h1>
+        </div>
+      </div>
+    </div>
+
+    <!-- States -->
+    <div *ngIf="isLoading" class="state-message">Loading assignments...</div>
+    <div *ngIf="error" class="state-message error-text">{{ error }}</div>
+    <div *ngIf="!isLoading && !error && assignments.length === 0" class="state-message">
+      No assignments found.
+    </div>
+
+    <!-- Assignment Cards -->
+    <div class="cards-container" *ngIf="!isLoading && !error && assignments.length > 0">
+      <div class="cards-row" *ngFor="let a of assignments">
+        <div class="cards-content">
+          <div class="card-top">
+            <div class="card-meta">
+              <span class="course-badge">{{ a.course_name }}</span>
+              <span class="deadline-label">Due: {{ a.deadline | date: 'mediumDate' }}</span>
+            </div>
+            <h6 class="assignment-title">{{ a.title }}</h6>
+            <p class="assignment-desc">{{ a.description }}</p>
+          </div>
+
+          <div class="card-footer">
+            <button class="btn-edit" (click)="editAssignment(a)">
+              <span class="edit-icon">✏️</span>
+              Edit Assignment
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

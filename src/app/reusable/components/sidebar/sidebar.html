@@ -1,52 +1,74 @@
-<div class="sidebar">
+<!-- Hamburger button (mobile only) -->
+<button class="hamburger-btn" (click)="toggleSidebar()" aria-label="Toggle menu">
+  <span class="bar" [class.bar-1-open]="isMobileOpen"></span>
+  <span class="bar" [class.bar-2-open]="isMobileOpen"></span>
+  <span class="bar" [class.bar-3-open]="isMobileOpen"></span>
+</button>
+
+<!-- Backdrop overlay -->
+<div
+  class="sidebar-backdrop"
+  [class.visible]="isMobileOpen"
+  (click)="closeSidebar()"
+></div>
+
+<!-- Sidebar panel -->
+<div class="sidebar" [class.mobile-open]="isMobileOpen">
 
   <!-- Logo -->
   <div class="logo" (click)="navigate('/student-dashboard')">
     <div class="logo-icon">
-      <img src="/CodeMark Logo.png" alt="CodeMark Logo">
+      <img src="/CodeMark Logo.png" alt="CodeMark Logo" />
     </div>
   </div>
 
   <!-- Menu -->
   <div class="menu">
-    <div class="menu-item" 
-         [class.active]="activeRoute === '/student-dashboard'" 
-         (click)="navigate('/student-dashboard')">
-      <img src="/Dashboard.png" alt="Dashboard Icon" class="icon">
+    <div
+      class="menu-item"
+      [class.active]="activeRoute === '/student-dashboard'"
+      (click)="navigate('/student-dashboard')"
+    >
+      <img src="/Dashboard.png" alt="Dashboard Icon" class="icon" />
       <span>Dashboard</span>
     </div>
 
-    <div class="menu-item" 
-         [class.active]="activeRoute === '/student-submission'" 
-         (click)="navigate('/student-submission')">
-      <img src="/Submission.png" alt="Submission Icon" class="icon">
+    <div
+      class="menu-item"
+      [class.active]="activeRoute === '/student-submission'"
+      (click)="navigate('/student-submission')"
+    >
+      <img src="/Submission.png" alt="Submission Icon" class="icon" />
       <span>Submission</span>
     </div>
 
-    <div class="menu-item" 
-         [class.active]="activeRoute === '/student-feedback'" 
-         (click)="navigate('/student-feedback')">
-      <img src="/Feedback.png" alt="Feedback Icon" class="icon">
+    <div
+      class="menu-item"
+      [class.active]="activeRoute === '/student-feedback'"
+      (click)="navigate('/student-feedback')"
+    >
+      <img src="/Feedback.png" alt="Feedback Icon" class="icon" />
       <span>Feedback</span>
     </div>
 
-    <div class="menu-item" 
-         [class.active]="activeRoute === '/student-performance'" 
-         (click)="navigate('/student-performance')">
-      <img src="/Performance.png" alt="Performance Icon" class="icon">
+    <div
+      class="menu-item"
+      [class.active]="activeRoute === '/student-performance'"
+      (click)="navigate('/student-performance')"
+    >
+      <img src="/Performance.png" alt="Performance Icon" class="icon" />
       <span>Performance</span>
     </div>
   </div>
 
   <!-- Bottom Menu -->
   <div class="bottom-menu">
-    <div class="menu-item">
-      <img src="/Settings.png" alt="Settings Icon" class="icon">
-      <span>Settings</span>
-    </div>
-
-    <div class="menu-item">
-      <img src="/Support.png" alt="Support Icon" class="icon">
+    <div
+      class="menu-item"
+      [class.active]="activeRoute === '/support'"
+      (click)="navigate('/support')"
+    >
+      <img src="/Support.png" alt="Support Icon" class="icon" />
       <span>Support</span>
     </div>
 

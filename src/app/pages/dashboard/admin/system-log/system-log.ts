@@ -29,6 +29,7 @@ export class SystemLog implements OnInit {
 
   readonly ACTION_OPTIONS = [
     { value: '', label: 'All Actions' },
+    { value: 'REGISTER_USER', label: 'User Registered' },          // ← Added
     { value: 'UPDATE_LECTURER_STATUS', label: 'Update Lecturer Status' },
     { value: 'DELETE_USER', label: 'Delete User' },
     { value: 'BACKUP_SYSTEM', label: 'Backup System' },
@@ -48,7 +49,7 @@ export class SystemLog implements OnInit {
 
   constructor(
     private api: Api,
-    private cdr: ChangeDetectorRef   // ← Added for change detection fix
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -75,16 +76,12 @@ export class SystemLog implements OnInit {
         this.logs = res.logs || [];
         this.total = res.total || 0;
         this.isLoading = false;
-        
-        // Fix: Force change detection after async update
         this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Error loading logs:', err);
         this.error = 'Failed to load system logs. Please try again.';
         this.isLoading = false;
-        
-        // Fix: Force change detection after async update
         this.cdr.detectChanges();
       }
     });
@@ -130,19 +127,22 @@ export class SystemLog implements OnInit {
   formatDate(dateStr: string): string {
     if (!dateStr) return '—';
     return new Date(dateStr).toLocaleString('en-MY', {
-      day: '2-digit', 
-      month: 'short', 
+      day: '2-digit',
+      month: 'short',
       year: 'numeric',
-      hour: '2-digit', 
+      hour: '2-digit',
       minute: '2-digit',
     });
   }
 
   getActionBadgeClass(action: string): string {
-    if (action?.includes('DELETE')) return 'badge-danger';
-    if (action?.includes('APPROVE') || action?.includes('approved')) return 'badge-success';
-    if (action?.includes('REJECT') || action?.includes('rejected')) return 'badge-warning';
-    if (action?.includes('BACKUP')) return 'badge-info';
+    if (!action) return 'badge-default';
+    const upper = action.toUpperCase();
+    if (upper.includes('DELETE')) return 'badge-danger';
+    if (upper.includes('REGISTER')) return 'badge-success';        // ← Added
+    if (upper.includes('APPROVE') || upper.includes('APPROVED')) return 'badge-success';
+    if (upper.includes('REJECT') || upper.includes('REJECTED')) return 'badge-warning';
+    if (upper.includes('BACKUP') || upper.includes('UPDATE')) return 'badge-info';
     return 'badge-default';
   }
 

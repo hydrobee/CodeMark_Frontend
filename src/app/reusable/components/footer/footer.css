@@ -1,0 +1,11 @@
+p {
+    font-weight: 100;
+    font-size: small;
+    margin-top: 40px;
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

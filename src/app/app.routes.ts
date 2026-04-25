@@ -28,6 +28,9 @@ import { AllUsers } from './pages/dashboard/admin/all-users/all-users';
 import { ApproveLecturer } from './pages/dashboard/admin/approve-lecturer/approve-lecturer';
 import { ResetCredential } from './pages/dashboard/admin/reset-credential/reset-credential';
 import { DeleteUser } from './pages/dashboard/admin/delete-user/delete-user';
+import { Support } from './pages/dashboard/student/support/support';
+import { SupportLecturer } from './pages/dashboard/lecturer/support-lecturer/support-lecturer';
+import { EditAssignmentForm } from './pages/dashboard/lecturer/edit-assignment-form/edit-assignment-form';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -60,5 +63,8 @@ export const routes: Routes = [
   { path: 'approve-lecturer', component: ApproveLecturer},
   { path: 'reset-credential', component: ResetCredential},
   { path: 'delete-user', component: DeleteUser},
+  { path: 'support', component: Support},
+  { path: 'support-lecturer', component: SupportLecturer},
+  { path: 'edit-assignment-form/:id', component: EditAssignmentForm},
   { path: '**', redirectTo: 'login' },
 ];

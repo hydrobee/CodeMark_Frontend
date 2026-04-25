@@ -4,11 +4,12 @@ import { Sidebar } from '../../../../reusable/components/sidebar/sidebar';
 import { Api } from '../../../../services/api';
 import { PerformanceChartComponent } from '../../../../reusable/components/performance-chart/chart/chart';
 import { Router } from '@angular/router';
+import { Footer } from '../../../../reusable/components/footer/footer';
 
 @Component({
   selector: 'app-student',
   standalone: true,
-  imports: [Sidebar, CommonModule, PerformanceChartComponent],
+  imports: [Sidebar, CommonModule, PerformanceChartComponent, Footer],
   templateUrl: './student.html',
   styleUrls: ['./student.css'],
 })

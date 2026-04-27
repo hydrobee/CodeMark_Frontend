@@ -424,6 +424,30 @@ deleteUser(userId: number): Observable<any> {
   );
 }
 
+getPendingLecturers(): Observable<any[]> {
+  return this.http.get<any[]>(`${this.baseUrl}/admin/pending-lecturers`, {
+    headers: this.getAuthHeaders(),
+  }).pipe(
+    catchError((err) => {
+      console.error('API Error in getPendingLecturers:', err);
+      return throwError(() => err);
+    }),
+  );
+}
+
+updateLecturerStatus(lecturerId: number, action: 'approved' | 'rejected'): Observable<any> {
+  return this.http.patch<any>(
+    `${this.baseUrl}/admin/lecturer/${lecturerId}/status?action=${action}`,
+    {},
+    { headers: this.getAuthHeaders() },
+  ).pipe(
+    catchError((err) => {
+      console.error('API Error in updateLecturerStatus:', err);
+      return throwError(() => err);
+    }),
+  );
+}
+
   // ======================
   // Private Helper Method
   // ======================

@@ -8,7 +8,7 @@ import { Api } from '../../../../services/api';
 
 @Component({
   selector: 'app-review-approval',
-  imports: [SidebarLecturer, CommonModule, FormsModule, DatePipe],
+  imports: [CommonModule, FormsModule, DatePipe],
   templateUrl: './review-approval.html',
   styleUrls: ['./review-approval.css'],
 })

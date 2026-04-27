@@ -413,6 +413,17 @@ export class Api {
   );
 }
 
+deleteUser(userId: number): Observable<any> {
+  return this.http.delete<any>(`${this.baseUrl}/admin/user/${userId}`, {
+    headers: this.getAuthHeaders(),
+  }).pipe(
+    catchError((err) => {
+      console.error('API Error in deleteUser:', err);
+      return throwError(() => err);
+    }),
+  );
+}
+
   // ======================
   // Private Helper Method
   // ======================

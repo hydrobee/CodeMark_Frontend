@@ -1,9 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { Api } from '../../../../services/api';
 
 @Component({
   selector: 'app-all-users',
@@ -25,10 +25,9 @@ export class AllUsers implements OnInit {
 
   private searchSubject = new Subject<string>();
 
-  constructor(private http: HttpClient, private cdr: ChangeDetectorRef) {}
+  constructor(private api: Api, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
-    // Wait 400ms after user stops typing before searching
     this.searchSubject.pipe(
       debounceTime(400),
       distinctUntilChanged()
@@ -49,28 +48,19 @@ export class AllUsers implements OnInit {
     this.error = '';
     this.cdr.detectChanges();
 
-    const token = localStorage.getItem('token');
-    const headers = new HttpHeaders({
-      Authorization: `Bearer ${token}`
-    });
-
-    let url = `http://localhost:8000/admin/users?limit=${this.limit}&offset=${this.offset}`;
-
-    if (this.search.trim()) {
-      url += `&search=${encodeURIComponent(this.search.trim())}`;
-    }
-    if (this.roleFilter) {
-      url += `&role=${this.roleFilter}`;
-    }
-
-    this.http.get<any>(url, { headers }).subscribe({
-      next: (response) => {
+    this.api.getAdminUsers({
+      limit: this.limit,
+      offset: this.offset,
+      search: this.search.trim() || undefined,
+      role: this.roleFilter || undefined,
+    }).subscribe({
+      next: (response: any) => {
         this.users = response.users || [];
         this.total = response.total || 0;
         this.loading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         this.error = 'Failed to load users. Please try again.';
         this.loading = false;
         this.cdr.detectChanges();

@@ -390,6 +390,29 @@ export class Api {
     return this.http.post(url, formData, { headers: this.getAuthHeaders() });
   }
 
+  getAdminUsers(filters: {
+  search?: string;
+  role?: string;
+  limit?: number;
+  offset?: number;
+} = {}): Observable<any> {
+  let params = new HttpParams();
+  if (filters.search) params = params.set('search', filters.search);
+  if (filters.role) params = params.set('role', filters.role);
+  if (filters.limit !== undefined) params = params.set('limit', filters.limit.toString());
+  if (filters.offset !== undefined) params = params.set('offset', filters.offset.toString());
+
+  return this.http.get<any>(`${this.baseUrl}/admin/users`, {
+    headers: this.getAuthHeaders(),
+    params,
+  }).pipe(
+    catchError((err) => {
+      console.error('API Error in getAdminUsers:', err);
+      return throwError(() => err);
+    }),
+  );
+}
+
   // ======================
   // Private Helper Method
   // ======================

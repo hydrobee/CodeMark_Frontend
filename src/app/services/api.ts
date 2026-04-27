@@ -9,7 +9,7 @@ import { map } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class Api {
-  private baseUrl = 'http://127.0.0.1:8000';
+  private baseUrl = 'https://codemark-ai-assisted-student-programming.onrender.com';
 
   constructor(
     private http: HttpClient,
@@ -46,11 +46,11 @@ export class Api {
   // Student Endpoints
   // ======================
   getAssignments(): Observable<any[]> {
-    return this.getWithErrorHandling('http://127.0.0.1:8000/student/', 'Assignments');
+    return this.getWithErrorHandling(`${this.baseUrl}/student/`, 'Assignments');
   }
 
   getFeedback(): Observable<any[]> {
-    return this.getWithErrorHandling('http://127.0.0.1:8000/student/my-submissions', 'Feedback');
+    return this.getWithErrorHandling(`${this.baseUrl}/student/my-submissions`, 'Feedback');
   }
 
   getStudentFeedbackDetail(submissionId: number): Observable<any> {
@@ -65,11 +65,11 @@ export class Api {
   }
 
   getPerformance(): Observable<any[]> {
-    return this.getWithErrorHandling('http://127.0.0.1:8000/student/performance', 'Performance');
+    return this.getWithErrorHandling(`${this.baseUrl}/student/performance`, 'Performance');
   }
 
   getProfile(): Observable<any> {
-    return this.getWithErrorHandling('http://127.0.0.1:8000/student/profile', 'Profile');
+    return this.getWithErrorHandling(`${this.baseUrl}/student/profile`, 'Profile');
   }
 
   // ======================

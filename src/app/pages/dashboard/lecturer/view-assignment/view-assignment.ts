@@ -51,7 +51,7 @@ export class ViewAssignment implements OnInit {
     this.errorMessage = null;
 
     this.http
-      .get<Assignment[]>('/api/lecturer/my-assignments', {
+      .get<Assignment[]>('https://codemark-ai-assisted-student-programming.onrender.com/lecturer/my-assignments', {
         headers: this.getAuthHeaders(),
       })
       .subscribe({

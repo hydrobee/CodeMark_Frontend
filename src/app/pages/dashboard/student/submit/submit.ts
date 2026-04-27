@@ -187,7 +187,7 @@ export class Submit implements OnInit {
   getFileUrl(): string {
     if (!this.assignment?.question_file_path) return '#';
     const normalized = this.assignment.question_file_path.replace(/\\/g, '/');
-    return `http://localhost:8000/${normalized}`;
+    return `https://codemark-ai-assisted-student-programming.onrender.com/${normalized}`;
   }
 
   getRubricUrl(): string {
@@ -199,7 +199,7 @@ export class Submit implements OnInit {
 
     // If path doesn't start with "uploads/", add the base URL
     if (!path.startsWith('http')) {
-      return `http://localhost:8000/${path}`;
+      return `https://codemark-ai-assisted-student-programming.onrender.com/${path}`;
     }
     return path;
   }

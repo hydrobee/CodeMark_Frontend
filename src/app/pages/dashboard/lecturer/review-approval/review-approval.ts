@@ -190,7 +190,7 @@ export class ReviewApproval implements OnInit {
   getFileUrl(filePath?: string): string {
     if (!filePath) return '#';
     const normalized = filePath.replace(/\\/g, '/');
-    return `http://localhost:8000/${normalized}`;
+    return `https://codemark-ai-assisted-student-programming.onrender.com/${normalized}`;
   }
 
   goBack(): void {

@@ -119,21 +119,25 @@ export class ReviewApproval implements OnInit {
 
   saveEdit(): void {
     this.isSaving = true;
-    this.successMsg = '';
-    this.actionError = '';
 
-    this.api.editFeedback(this.feedbackId, this.draft).subscribe({
+    const payload = {
+      comments: this.draft.comments ?? '',
+      strengths: this.draft.strengths ?? '',
+      areas_for_improvement: this.draft.areas_for_improvement ?? '',
+      grade: this.draft.grade ?? 0, // ✅ NEVER null
+    };
+
+    this.api.editFeedback(this.feedbackId, payload).subscribe({
       next: (updated) => {
         this.feedback = { ...this.feedback, ...updated };
         this.isEditing = false;
         this.isSaving = false;
         this.successMsg = 'Feedback updated successfully.';
-        this.cdr.detectChanges();
       },
-      error: () => {
-        this.actionError = 'Failed to save changes. Please try again.';
+      error: (err) => {
+        console.error('EDIT ERROR:', err); // 🔥 SEE REAL ERROR
+        this.actionError = err.error?.detail || 'Failed to save changes.';
         this.isSaving = false;
-        this.cdr.detectChanges();
       },
     });
   }

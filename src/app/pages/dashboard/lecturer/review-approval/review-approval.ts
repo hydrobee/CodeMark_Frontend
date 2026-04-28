@@ -2,8 +2,6 @@ import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angu
 import { CommonModule, isPlatformBrowser, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { SidebarLecturer } from '../../../../reusable/components/sidebar-lecturer/sidebar-lecturer';
 import { Api } from '../../../../services/api';
 
 @Component({
@@ -14,7 +12,7 @@ import { Api } from '../../../../services/api';
 })
 export class ReviewApproval implements OnInit {
   feedbackId!: number;
-  submissionId: string | number = ''; // can be string like "85559"
+  submissionId: string | number = '';
 
   submission: any = null;
   feedback: any = null;
@@ -48,7 +46,6 @@ export class ReviewApproval implements OnInit {
       return;
     }
 
-    // Better way to read route parameters
     this.feedbackId = Number(this.route.snapshot.paramMap.get('feedback_id'));
     this.submissionId = this.route.snapshot.paramMap.get('submission_id') || '';
 
@@ -76,17 +73,14 @@ export class ReviewApproval implements OnInit {
     this.api.getPendingFeedbackDetail(this.feedbackId).subscribe({
       next: (data: any) => {
         console.log('Feedback detail loaded:', data);
-
         this.feedback = data;
-        this.submission = data; // merged data
-
+        this.submission = data;
         this.draft = {
           comments: data.comments || '',
           strengths: data.strengths || '',
           areas_for_improvement: data.areas_for_improvement || '',
           grade: data.grade ?? null,
         };
-
         this.isLoading = false;
         this.cdr.detectChanges();
       },
@@ -124,7 +118,7 @@ export class ReviewApproval implements OnInit {
       comments: this.draft.comments ?? '',
       strengths: this.draft.strengths ?? '',
       areas_for_improvement: this.draft.areas_for_improvement ?? '',
-      grade: this.draft.grade ?? 0, // ✅ NEVER null
+      grade: this.draft.grade ?? 0,
     };
 
     this.api.editFeedback(this.feedbackId, payload).subscribe({
@@ -136,7 +130,7 @@ export class ReviewApproval implements OnInit {
         this.cdr.detectChanges();
       },
       error: (err) => {
-        console.error('EDIT ERROR:', err); // 🔥 SEE REAL ERROR
+        console.error('EDIT ERROR:', err);
         this.actionError = err.error?.detail || 'Failed to save changes.';
         this.isSaving = false;
         this.cdr.detectChanges();
@@ -154,6 +148,15 @@ export class ReviewApproval implements OnInit {
         this.feedback.status = 'approved';
         this.isActioning = false;
         this.successMsg = 'Feedback approved and released to student.';
+
+        // ✅ single call handles both in-app + email
+        this.api.notifyFeedbackReleased(
+          this.feedback.title,
+          this.feedback.grade,
+          this.feedback.student_email ?? '',
+          this.feedback.student_name,
+        );
+
         this.cdr.detectChanges();
       },
       error: () => {

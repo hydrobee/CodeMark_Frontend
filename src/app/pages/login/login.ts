@@ -29,6 +29,10 @@ export class Login {
 
   errorMsg = '';
 
+  // ← put your admin email here
+  private readonly ADMIN_EMAIL = 'admin@yourdomain.com';
+  private readonly ADMIN_NAME = 'Admin';
+
   constructor(
     private api: Api,
     private router: Router,
@@ -63,7 +67,13 @@ export class Login {
     this.api.register(data).subscribe({
       next: (res) => {
         if (this.role === 'lecturer') {
-          // ✅ Lecturer needs approval — just switch to sign in with a message
+          // ✅ Notify admin about new lecturer registration
+          this.api.notifyAdminNewLecturer(
+            this.name + ' ' + this.lastName,
+            this.ADMIN_EMAIL,
+            this.ADMIN_NAME,
+          );
+
           alert('Registration successful! Your account is pending admin approval before you can log in.');
           this.switchTab('signin');
           return;
@@ -77,10 +87,9 @@ export class Login {
             this.router.navigate(['/student-dashboard']);
           },
           error: () => {
-            // Fallback: auto-login failed, send them to sign in manually
             alert('Account created! Please sign in.');
             this.switchTab('signin');
-          }
+          },
         });
       },
       error: (err) => {

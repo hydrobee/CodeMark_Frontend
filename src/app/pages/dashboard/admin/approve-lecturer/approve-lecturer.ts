@@ -42,22 +42,34 @@ export class ApproveLecturer implements OnInit {
   }
 
   updateStatus(lecturerId: number, action: 'approved' | 'rejected') {
-    this.actionLoading[lecturerId] = true;
-    this.cdr.detectChanges();
+  this.actionLoading[lecturerId] = true;
+  this.cdr.detectChanges();
 
-    this.api.updateLecturerStatus(lecturerId, action).subscribe({
-      next: () => {
-        this.lecturers = this.lecturers.filter(l => l.lecturer_id !== lecturerId);
-        this.actionLoading[lecturerId] = false;
-        this.cdr.detectChanges();
-      },
-      error: (err: any) => {
-        this.actionLoading[lecturerId] = false;
-        this.cdr.detectChanges();
-        console.error('Failed to update lecturer status', err);
+  this.api.updateLecturerStatus(lecturerId, action).subscribe({
+    next: () => {
+      // Find the lecturer before removing from list
+      const lecturer = this.lecturers.find(l => l.lecturer_id === lecturerId);
+
+      // ✅ Send email + in-app notification to lecturer
+      if (lecturer) {
+        this.api.notifyLecturerApproval(
+          action,
+          lecturer.email,
+          lecturer.name,
+        );
       }
-    });
-  }
+
+      this.lecturers = this.lecturers.filter(l => l.lecturer_id !== lecturerId);
+      this.actionLoading[lecturerId] = false;
+      this.cdr.detectChanges();
+    },
+    error: (err: any) => {
+      this.actionLoading[lecturerId] = false;
+      this.cdr.detectChanges();
+      console.error('Failed to update lecturer status', err);
+    }
+  });
+}
 
   goBack() {
     window.history.back();

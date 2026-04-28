@@ -163,15 +163,19 @@ export class Submit implements OnInit {
 
     // Pass group_no as optional query param
     this.api
-      .submitAssignment(
-        this.assignment.assignment_id,
-        formData,
-        this.groupNo.trim() || undefined, 
-      )
+      .submitAssignment(this.assignment.assignment_id, formData, this.groupNo.trim() || undefined)
       .subscribe({
         next: () => {
           this.isUploading = false;
           this.submitSuccess = true;
+
+          this.api.notifyNewSubmission(
+            this.studentProfile?.name || 'A student',
+            this.assignment?.title,
+            this.assignment?.lecturer_email,
+            this.assignment?.lecturer_name,
+          );
+
           this.selectedFile = null;
           this.assignment.submission_status = 'Submitted';
           this.cdr.detectChanges();

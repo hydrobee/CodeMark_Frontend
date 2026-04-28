@@ -4,6 +4,8 @@ import { Observable, throwError } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 import { isPlatformBrowser } from '@angular/common';
 import { map } from 'rxjs/operators';
+import { NotificationService } from '../reusable/components/notification.service/notification.service';
+import { EmailService } from '../reusable/components/email.service/email.service';
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +15,8 @@ export class Api {
 
   constructor(
     private http: HttpClient,
+    private notifService: NotificationService,
+    private emailService: EmailService,
     @Inject(PLATFORM_ID) private platformId: Object,
   ) {}
 
@@ -36,6 +40,22 @@ export class Api {
 
   register(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/auth/register`, data);
+  }
+
+  // Call this after register() succeeds for a lecturer — notifies admin
+  notifyAdminNewLecturer(lecturerName: string, adminEmail: string, adminName: string): void {
+    this.notifService.add({
+      type: 'new_lecturer',
+      title: 'New Lecturer Registration',
+      message: `${lecturerName} is awaiting approval`,
+      link: '/admin/pending-lecturers',
+    });
+    this.emailService.send(
+      adminEmail,
+      adminName,
+      'New Lecturer Awaiting Approval',
+      `${lecturerName} has registered as a lecturer and is awaiting your approval. Log in to review.`,
+    );
   }
 
   getMe(): Observable<any> {
@@ -126,6 +146,27 @@ export class Api {
       );
   }
 
+  notifyNewAssignment(
+    title: string,
+    courseName: string,
+    studentEmails: { email: string; name: string }[],
+  ): void {
+    this.notifService.add({
+      type: 'assignment',
+      title: 'New Assignment Posted',
+      message: `${title} — ${courseName}`,
+      link: '/student/assignments',
+    });
+    studentEmails.forEach((s) => {
+      this.emailService.send(
+        s.email,
+        s.name,
+        `New Assignment: ${title}`,
+        `A new assignment "${title}" has been posted for ${courseName}. Please log in to view it.`,
+      );
+    });
+  }
+
   updateAssignment(assignmentId: number, data: any): Observable<any> {
     return this.http
       .put<any>(`${this.baseUrl}/lecturer/update-assignment/${assignmentId}`, data, {
@@ -164,11 +205,9 @@ export class Api {
     const formData = new FormData();
     formData.append('file', file);
     return this.http
-      .post<any>(
-        `${this.baseUrl}/lecturer/assignment/${assignmentId}/upload-question`,
-        formData,
-        { headers: this.getAuthHeaders() },
-      )
+      .post<any>(`${this.baseUrl}/lecturer/assignment/${assignmentId}/upload-question`, formData, {
+        headers: this.getAuthHeaders(),
+      })
       .pipe(
         tap({
           next: (res) => console.log('Question file uploaded:', res),
@@ -201,13 +240,14 @@ export class Api {
       );
   }
 
-  saveRubric(assignmentId: number, data: { criteria: { name: string; weight: number }[] }): Observable<any> {
+  saveRubric(
+    assignmentId: number,
+    data: { criteria: { name: string; weight: number }[] },
+  ): Observable<any> {
     return this.http
-      .post<any>(
-        `${this.baseUrl}/lecturer/assignment/${assignmentId}/rubric`,
-        data,
-        { headers: this.getAuthHeaders() },
-      )
+      .post<any>(`${this.baseUrl}/lecturer/assignment/${assignmentId}/rubric`, data, {
+        headers: this.getAuthHeaders(),
+      })
       .pipe(
         tap({
           next: (res) => console.log('Rubric saved:', res),
@@ -224,11 +264,9 @@ export class Api {
     const formData = new FormData();
     formData.append('file', file);
     return this.http
-      .post<any>(
-        `${this.baseUrl}/lecturer/assignment/${assignmentId}/rubric/upload`,
-        formData,
-        { headers: this.getAuthHeaders() },
-      )
+      .post<any>(`${this.baseUrl}/lecturer/assignment/${assignmentId}/rubric/upload`, formData, {
+        headers: this.getAuthHeaders(),
+      })
       .pipe(
         tap({
           next: (res) => console.log('Rubric file uploaded:', res),
@@ -326,6 +364,27 @@ export class Api {
       );
   }
 
+  // Call this after approveFeedback() succeeds — pass student info
+  notifyFeedbackReleased(
+    title: string,
+    grade: number,
+    studentEmail: string,
+    studentName: string,
+  ): void {
+    this.notifService.add({
+      type: 'feedback',
+      title: 'Feedback Released',
+      message: `${title} — Grade: ${grade}%`,
+      link: '/student/submissions',
+    });
+    this.emailService.send(
+      studentEmail,
+      studentName,
+      `Feedback Released: ${title}`,
+      `Your feedback for "${title}" has been released. Your grade is ${grade}%. Log in to view the full feedback.`,
+    );
+  }
+
   rejectFeedback(feedbackId: number): Observable<any> {
     return this.http
       .put<any>(
@@ -390,63 +449,114 @@ export class Api {
     return this.http.post(url, formData, { headers: this.getAuthHeaders() });
   }
 
-  getAdminUsers(filters: {
-  search?: string;
-  role?: string;
-  limit?: number;
-  offset?: number;
-} = {}): Observable<any> {
-  let params = new HttpParams();
-  if (filters.search) params = params.set('search', filters.search);
-  if (filters.role) params = params.set('role', filters.role);
-  if (filters.limit !== undefined) params = params.set('limit', filters.limit.toString());
-  if (filters.offset !== undefined) params = params.set('offset', filters.offset.toString());
+  // Call this after submitAssignment() succeeds — pass lecturer info
+  notifyNewSubmission(
+    studentName: string,
+    title: string,
+    lecturerEmail: string,
+    lecturerName: string,
+  ): void {
+    this.notifService.add({
+      type: 'submission',
+      title: 'New Submission Received',
+      message: `${studentName} submitted ${title}`,
+      link: '/lecturer/submissions',
+    });
+    this.emailService.send(
+      lecturerEmail,
+      lecturerName,
+      `New Submission: ${title}`,
+      `${studentName} has submitted "${title}". Log in to review it.`,
+    );
+  }
 
-  return this.http.get<any>(`${this.baseUrl}/admin/users`, {
-    headers: this.getAuthHeaders(),
-    params,
-  }).pipe(
-    catchError((err) => {
-      console.error('API Error in getAdminUsers:', err);
-      return throwError(() => err);
-    }),
-  );
-}
+  getAdminUsers(
+    filters: {
+      search?: string;
+      role?: string;
+      limit?: number;
+      offset?: number;
+    } = {},
+  ): Observable<any> {
+    let params = new HttpParams();
+    if (filters.search) params = params.set('search', filters.search);
+    if (filters.role) params = params.set('role', filters.role);
+    if (filters.limit !== undefined) params = params.set('limit', filters.limit.toString());
+    if (filters.offset !== undefined) params = params.set('offset', filters.offset.toString());
 
-deleteUser(userId: number): Observable<any> {
-  return this.http.delete<any>(`${this.baseUrl}/admin/user/${userId}`, {
-    headers: this.getAuthHeaders(),
-  }).pipe(
-    catchError((err) => {
-      console.error('API Error in deleteUser:', err);
-      return throwError(() => err);
-    }),
-  );
-}
+    return this.http
+      .get<any>(`${this.baseUrl}/admin/users`, {
+        headers: this.getAuthHeaders(),
+        params,
+      })
+      .pipe(
+        catchError((err) => {
+          console.error('API Error in getAdminUsers:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
 
-getPendingLecturers(): Observable<any[]> {
-  return this.http.get<any[]>(`${this.baseUrl}/admin/pending-lecturers`, {
-    headers: this.getAuthHeaders(),
-  }).pipe(
-    catchError((err) => {
-      console.error('API Error in getPendingLecturers:', err);
-      return throwError(() => err);
-    }),
-  );
-}
+  deleteUser(userId: number): Observable<any> {
+    return this.http
+      .delete<any>(`${this.baseUrl}/admin/user/${userId}`, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        catchError((err) => {
+          console.error('API Error in deleteUser:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
 
-updateLecturerStatus(lecturerId: number, action: 'approved' | 'rejected'): Observable<any> {
-  return this.http.patch<any>(
-    `${this.baseUrl}/admin/lecturer/${lecturerId}/status?action=${action}`,
-    {},
-    { headers: this.getAuthHeaders() },
-  ).pipe(
-    catchError((err) => {
-      console.error('API Error in updateLecturerStatus:', err);
-      return throwError(() => err);
-    }),
-  );
-}
+  getPendingLecturers(): Observable<any[]> {
+    return this.http
+      .get<any[]>(`${this.baseUrl}/admin/pending-lecturers`, {
+        headers: this.getAuthHeaders(),
+      })
+      .pipe(
+        catchError((err) => {
+          console.error('API Error in getPendingLecturers:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  updateLecturerStatus(lecturerId: number, action: 'approved' | 'rejected'): Observable<any> {
+    return this.http
+      .patch<any>(
+        `${this.baseUrl}/admin/lecturer/${lecturerId}/status?action=${action}`,
+        {},
+        { headers: this.getAuthHeaders() },
+      )
+      .pipe(
+        catchError((err) => {
+          console.error('API Error in updateLecturerStatus:', err);
+          return throwError(() => err);
+        }),
+      );
+  }
+
+  // Call this after updateLecturerStatus() succeeds
+  notifyLecturerApproval(
+    action: 'approved' | 'rejected',
+    lecturerEmail: string,
+    lecturerName: string,
+  ): void {
+    this.notifService.add({
+      type: action,
+      title: action === 'approved' ? 'Account Approved' : 'Account Rejected',
+      message: `Your lecturer account has been ${action}`,
+      link: '/lecturer/dashboard',
+    });
+    this.emailService.send(
+      lecturerEmail,
+      lecturerName,
+      `Account ${action === 'approved' ? 'Approved' : 'Rejected'}`,
+      `Your CodeMark lecturer account has been ${action}. ${action === 'approved' ? 'You can now log in.' : 'Please contact admin for more info.'}`,
+    );
+  }
 
   // ======================
   // Private Helper Method

@@ -1,1 +1,37 @@
-<p>notifications works!</p>
+<div class="notification-page">
+  <div class="page-header">
+    <h1>Notifications</h1>
+    <button class="mark-btn" (click)="markAllRead()" *ngIf="notifications.length > 0">
+      Mark all as read
+    </button>
+  </div>
+
+  <div class="empty" *ngIf="notifications.length === 0">
+    <p>🔔 No notifications yet.</p>
+  </div>
+
+  <div class="notif-list">
+    <div
+      class="notif-item"
+      *ngFor="let n of notifications"
+      [class.unread]="!n.read"
+      (click)="navigate(n)"
+    >
+      <div class="notif-icon">
+        <span *ngIf="n.type === 'assignment'">📋</span>
+        <span *ngIf="n.type === 'feedback'">✅</span>
+        <span *ngIf="n.type === 'submission'">📤</span>
+        <span *ngIf="n.type === 'new_lecturer'">👤</span>
+        <span *ngIf="n.type === 'approved'">✔️</span>
+        <span *ngIf="n.type === 'rejected'">❌</span>
+        <span *ngIf="!['assignment','feedback','submission','new_lecturer','approved','rejected'].includes(n.type)">🔔</span>
+      </div>
+      <div class="notif-body">
+        <div class="notif-title">{{ n.title }}</div>
+        <div class="notif-msg">{{ n.message }}</div>
+        <div class="notif-time">{{ n.timestamp | date:'medium' }}</div>
+      </div>
+      <div class="unread-dot" *ngIf="!n.read"></div>
+    </div>
+  </div>
+</div>

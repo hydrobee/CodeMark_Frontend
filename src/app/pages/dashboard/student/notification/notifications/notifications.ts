@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-//import { NotificationService, AppNotification } from '../notification.service/notification.service';
 import { NotificationService, AppNotification } from '../../../../../reusable/components/notification.service/notification.service';
 
 @Component({
@@ -20,8 +19,9 @@ export class Notifications implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.notifService.notifications$.subscribe((notifs) => {
-      this.notifications = notifs;
+    // ← subscribe but filter to current user only
+    this.notifService.notifications$.subscribe(() => {
+      this.notifications = this.notifService.getForCurrentUser();
     });
   }
 

@@ -9,6 +9,7 @@ export interface AppNotification {
   link?: string;
   read: boolean;
   timestamp: Date;
+  userId: string; // ← add this
 }
 
 @Injectable({ providedIn: 'root' })
@@ -17,28 +18,46 @@ export class NotificationService {
   notifications$ = this._notifications.asObservable();
   private nextId = 1;
 
-  add(notif: Omit<AppNotification, 'id' | 'read' | 'timestamp'>): void {
+  private getCurrentUserId(): string {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user?.user_id?.toString() || 'unknown';
+  }
+
+  add(notif: Omit<AppNotification, 'id' | 'read' | 'timestamp' | 'userId'>): void {
     const current = this._notifications.value;
-    // Avoid duplicate notifications
+    const userId = this.getCurrentUserId();
+
     const isDuplicate = current.some(
-      (n) => n.title === notif.title && n.message === notif.message
+      (n) => n.title === notif.title && n.message === notif.message && n.userId === userId
     );
     if (isDuplicate) return;
 
     this._notifications.next([
-      { ...notif, id: this.nextId++, read: false, timestamp: new Date() },
+      { ...notif, id: this.nextId++, read: false, timestamp: new Date(), userId },
       ...current,
     ]);
   }
 
+  // ← returns only current user's notifications
+  getForCurrentUser(): AppNotification[] {
+    const userId = this.getCurrentUserId();
+    return this._notifications.value.filter((n) => n.userId === userId);
+  }
+
   markAllRead(): void {
+    const userId = this.getCurrentUserId();
     this._notifications.next(
-      this._notifications.value.map((n) => ({ ...n, read: true }))
+      this._notifications.value.map((n) =>
+        n.userId === userId ? { ...n, read: true } : n
+      )
     );
   }
 
   getUnreadCount(): number {
-    return this._notifications.value.filter((n) => !n.read).length;
+    const userId = this.getCurrentUserId();
+    return this._notifications.value.filter(
+      (n) => n.userId === userId && !n.read
+    ).length;
   }
 
   clear(): void {

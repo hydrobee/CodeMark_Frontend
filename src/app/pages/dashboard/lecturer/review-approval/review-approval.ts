@@ -133,11 +133,13 @@ export class ReviewApproval implements OnInit {
         this.isEditing = false;
         this.isSaving = false;
         this.successMsg = 'Feedback updated successfully.';
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('EDIT ERROR:', err); // 🔥 SEE REAL ERROR
         this.actionError = err.error?.detail || 'Failed to save changes.';
         this.isSaving = false;
+        this.cdr.detectChanges();
       },
     });
   }

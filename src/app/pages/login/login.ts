@@ -56,35 +56,20 @@ export class Login {
       role: this.role,
     };
 
-    if (this.role === 'student') {
-      data.matric_no = this.matricNo;
-    }
-
-    if (this.role === 'lecturer') {
-      data.staff_id = this.staffId;
-    }
+    if (this.role === 'student') data.matric_no = this.matricNo;
+    if (this.role === 'lecturer') data.staff_id = this.staffId;
 
     this.api.register(data).subscribe({
-      next: (res) => {
-        if (this.role === 'lecturer') {
-          // ✅ Notify admin about new lecturer registration
-          this.api.notifyAdminNewLecturer(
-            this.name + ' ' + this.lastName,
-            this.ADMIN_EMAIL,
-            this.ADMIN_NAME,
-          );
-
-          alert('Registration successful! Your account is pending admin approval before you can log in.');
-          this.switchTab('signin');
-          return;
-        }
-
-        // ✅ Student — auto login then redirect to dashboard
+      next: () => {
         this.api.login(this.email, this.password).subscribe({
           next: (loginRes) => {
             localStorage.setItem('token', loginRes.access_token);
             localStorage.setItem('user', JSON.stringify(loginRes.user));
-            this.router.navigate(['/student-dashboard']);
+            if (this.role === 'lecturer') {
+              this.router.navigate(['/lecturer-dashboard']);
+            } else {
+              this.router.navigate(['/student-dashboard']);
+            }
           },
           error: () => {
             alert('Account created! Please sign in.');
@@ -103,8 +88,8 @@ export class Login {
   }
 
   togglePw(input: HTMLInputElement) {
-  input.type = input.type === 'password' ? 'text' : 'password';
-}
+    input.type = input.type === 'password' ? 'text' : 'password';
+  }
 
   onLogin() {
     this.api.login(this.email, this.password).subscribe({

@@ -43,20 +43,20 @@ export class Api {
   }
 
   // Call this after register() succeeds for a lecturer — notifies admin
-  notifyAdminNewLecturer(lecturerName: string, adminEmail: string, adminName: string): void {
-    this.notifService.add({
-      type: 'new_lecturer',
-      title: 'New Lecturer Registration',
-      message: `${lecturerName} is awaiting approval`,
-      link: '/admin/pending-lecturers',
-    });
-    this.emailService.send(
-      adminEmail,
-      adminName,
-      'New Lecturer Awaiting Approval',
-      `${lecturerName} has registered as a lecturer and is awaiting your approval. Log in to review.`,
-    );
-  }
+  // notifyAdminNewLecturer(lecturerName: string, adminEmail: string, adminName: string): void {
+  //   this.notifService.add({
+  //     type: 'new_lecturer',
+  //     title: 'New Lecturer Registration',
+  //     message: `${lecturerName} is awaiting approval`,
+  //     link: '/admin/pending-lecturers',
+  //   });
+  //   this.emailService.send(
+  //     adminEmail,
+  //     adminName,
+  //     'New Lecturer Awaiting Approval',
+  //     `${lecturerName} has registered as a lecturer and is awaiting your approval. Log in to review.`,
+  //   );
+  // }
 
   getMe(): Observable<any> {
     return this.http.get(`${this.baseUrl}/auth/me`, { headers: this.getAuthHeaders() });
@@ -510,53 +510,53 @@ export class Api {
       );
   }
 
-  getPendingLecturers(): Observable<any[]> {
-    return this.http
-      .get<any[]>(`${this.baseUrl}/admin/pending-lecturers`, {
-        headers: this.getAuthHeaders(),
-      })
-      .pipe(
-        catchError((err) => {
-          console.error('API Error in getPendingLecturers:', err);
-          return throwError(() => err);
-        }),
-      );
-  }
+  // getPendingLecturers(): Observable<any[]> {
+  //   return this.http
+  //     .get<any[]>(`${this.baseUrl}/admin/pending-lecturers`, {
+  //       headers: this.getAuthHeaders(),
+  //     })
+  //     .pipe(
+  //       catchError((err) => {
+  //         console.error('API Error in getPendingLecturers:', err);
+  //         return throwError(() => err);
+  //       }),
+  //     );
+  // }
 
-  updateLecturerStatus(lecturerId: number, action: 'approved' | 'rejected'): Observable<any> {
-    return this.http
-      .patch<any>(
-        `${this.baseUrl}/admin/lecturer/${lecturerId}/status?action=${action}`,
-        {},
-        { headers: this.getAuthHeaders() },
-      )
-      .pipe(
-        catchError((err) => {
-          console.error('API Error in updateLecturerStatus:', err);
-          return throwError(() => err);
-        }),
-      );
-  }
+  // updateLecturerStatus(lecturerId: number, action: 'approved' | 'rejected'): Observable<any> {
+  //   return this.http
+  //     .patch<any>(
+  //       `${this.baseUrl}/admin/lecturer/${lecturerId}/status?action=${action}`,
+  //       {},
+  //       { headers: this.getAuthHeaders() },
+  //     )
+  //     .pipe(
+  //       catchError((err) => {
+  //         console.error('API Error in updateLecturerStatus:', err);
+  //         return throwError(() => err);
+  //       }),
+  //     );
+  // }
 
   // Call this after updateLecturerStatus() succeeds
-  notifyLecturerApproval(
-    action: 'approved' | 'rejected',
-    lecturerEmail: string,
-    lecturerName: string,
-  ): void {
-    this.notifService.add({
-      type: action,
-      title: action === 'approved' ? 'Account Approved' : 'Account Rejected',
-      message: `Your lecturer account has been ${action}`,
-      link: '/lecturer/dashboard',
-    });
-    this.emailService.send(
-      lecturerEmail,
-      lecturerName,
-      `Account ${action === 'approved' ? 'Approved' : 'Rejected'}`,
-      `Your CodeMark lecturer account has been ${action}. ${action === 'approved' ? 'You can now log in.' : 'Please contact admin for more info.'}`,
-    );
-  }
+  // notifyLecturerApproval(
+  //   action: 'approved' | 'rejected',
+  //   lecturerEmail: string,
+  //   lecturerName: string,
+  // ): void {
+  //   this.notifService.add({
+  //     type: action,
+  //     title: action === 'approved' ? 'Account Approved' : 'Account Rejected',
+  //     message: `Your lecturer account has been ${action}`,
+  //     link: '/lecturer/dashboard',
+  //   });
+  //   this.emailService.send(
+  //     lecturerEmail,
+  //     lecturerName,
+  //     `Account ${action === 'approved' ? 'Approved' : 'Rejected'}`,
+  //     `Your CodeMark lecturer account has been ${action}. ${action === 'approved' ? 'You can now log in.' : 'Please contact admin for more info.'}`,
+  //   );
+  // }
 
   // ======================
   // Private Helper Method

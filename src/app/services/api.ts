@@ -58,6 +58,21 @@ export class Api {
     );
   }
 
+  notifyAdminNewUser(userName: string, role: string, adminEmail: string, adminName: string): void {
+    this.notifService.add({
+      type: 'new_user',
+      title: 'New User Registration',
+      message: `${userName} registered as a ${role}`,
+      link: '/admin/users',
+    });
+    this.emailService.send(
+      adminEmail,
+      adminName,
+      'New User Registration',
+      `${userName} has registered as a ${role} on CodeMark. Log in to the admin panel to view their account.`,
+    );
+  }
+
   getMe(): Observable<any> {
     return this.http.get(`${this.baseUrl}/auth/me`, { headers: this.getAuthHeaders() });
   }

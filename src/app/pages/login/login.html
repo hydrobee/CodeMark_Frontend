@@ -84,6 +84,7 @@
           name="password"
           required
           #pwField1
+          (keydown.enter)="onLogin()"
         />
         <button type="button" class="eye-btn" (click)="togglePw(pwField1)">
           <svg
@@ -124,6 +125,7 @@
           name="confirmPassword"
           required
           #pwField2
+          (keydown.enter)="onSignup()"
         />
         <button type="button" class="eye-btn" (click)="togglePw(pwField2)">
           <svg

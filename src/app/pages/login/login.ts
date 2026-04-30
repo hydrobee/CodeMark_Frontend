@@ -30,8 +30,8 @@ export class Login {
   errorMsg = '';
 
   // ← put your admin email here
-  private readonly ADMIN_EMAIL = 'admin@yourdomain.com';
-  private readonly ADMIN_NAME = 'Admin';
+  private readonly ADMIN_EMAIL = 'systemcodemark@gmail.com';
+  private readonly ADMIN_NAME = 'Steve Calvin ';
 
   constructor(
     private api: Api,
@@ -61,6 +61,14 @@ export class Login {
 
     this.api.register(data).subscribe({
       next: () => {
+        // ✅ Notify admin for every new signup
+        this.api.notifyAdminNewUser(
+          this.name + ' ' + this.lastName,
+          this.role,
+          this.ADMIN_EMAIL,
+          this.ADMIN_NAME,
+        );
+
         this.api.login(this.email, this.password).subscribe({
           next: (loginRes) => {
             localStorage.setItem('token', loginRes.access_token);

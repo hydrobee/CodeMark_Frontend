@@ -1,14 +1,13 @@
 <div class="page-bg">
   <div class="card">
-
     <!-- Tab Toggle -->
     <div class="tab-row">
-      <button class="tab" 
-              [class.active]="isLoginMode === false" 
-              (click)="switchTab('signup')">Sign up</button>
-      <button class="tab" 
-              [class.active]="isLoginMode === true" 
-              (click)="switchTab('signin')">Sign in</button>
+      <button class="tab" [class.active]="isLoginMode === false" (click)="switchTab('signup')">
+        Sign up
+      </button>
+      <button class="tab" [class.active]="isLoginMode === true" (click)="switchTab('signin')">
+        Sign in
+      </button>
     </div>
 
     <!-- Sign Up Form -->
@@ -16,8 +15,21 @@
       <h2 class="form-title">Create an account</h2>
 
       <div class="row-two">
-        <input class="field" type="text" placeholder="First Name" [(ngModel)]="name" name="name" required />
-        <input class="field" type="text" placeholder="Last Name" [(ngModel)]="lastName" name="lastName" />
+        <input
+          class="field"
+          type="text"
+          placeholder="First Name"
+          [(ngModel)]="name"
+          name="name"
+          required
+        />
+        <input
+          class="field"
+          type="text"
+          placeholder="Last Name"
+          [(ngModel)]="lastName"
+          name="lastName"
+        />
       </div>
 
       <div class="select-wrap">
@@ -31,28 +43,143 @@
 
       <!-- Student fields -->
       <div *ngIf="role === 'student'">
-        <input class="field" type="text" placeholder="Matric No" [(ngModel)]="matricNo" name="matricNo" required />
+        <input
+          class="field"
+          type="text"
+          placeholder="Matric No"
+          [(ngModel)]="matricNo"
+          name="matricNo"
+          required
+        />
         <!-- <input class="field" type="text" placeholder="Group No" [(ngModel)]="groupNo" name="groupNo" required /> -->
       </div>
 
       <!-- Lecturer field -->
       <div *ngIf="role === 'lecturer'">
-        <input class="field" type="text" placeholder="Staff ID" [(ngModel)]="staffId" name="staffId" required />
+        <input
+          class="field"
+          type="text"
+          placeholder="Staff ID"
+          [(ngModel)]="staffId"
+          name="staffId"
+          required
+        />
       </div>
 
-      <input class="field" type="email" placeholder="Enter your email" [(ngModel)]="email" name="email" required />
-      <input class="field" type="password" placeholder="Password" [(ngModel)]="password" name="password" required />
-      <input class="field" type="password" placeholder="Confirm Password" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+      <input
+        class="field"
+        type="email"
+        placeholder="Enter your email"
+        [(ngModel)]="email"
+        name="email"
+        required
+      />
+      <!-- Sign Up Form – Password fields -->
+      <div class="pw-wrap">
+        <input
+          class="field"
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          #pwField1
+        />
+        <button type="button" class="eye-btn" (click)="togglePw(pwField1)">
+          <svg
+            class="eye-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg
+            class="eye-off-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+            />
+            <line x1="1" y1="1" x2="23" y2="23" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="pw-wrap">
+        <input
+          class="field"
+          type="password"
+          placeholder="Confirm Password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          required
+          #pwField2
+        />
+        <button type="button" class="eye-btn" (click)="togglePw(pwField2)">
+          <svg
+            class="eye-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg
+            class="eye-off-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+            />
+            <line x1="1" y1="1" x2="23" y2="23" />
+          </svg>
+        </button>
+      </div>
 
       <button class="btn-primary" (click)="onSignup()">Create an account</button>
 
-      <p style="color:red" *ngIf="errorMsg">{{ errorMsg }}</p>
+      <p style="color: red" *ngIf="errorMsg">{{ errorMsg }}</p>
 
       <div class="brand">
         <div class="brand-icon">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="14" cy="14" r="13" stroke="white" stroke-width="1.5"/>
-            <text x="14" y="19" text-anchor="middle" fill="white" font-size="11" font-family="Sora" font-weight="600">M</text>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 28 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="14" cy="14" r="13" stroke="white" stroke-width="1.5" />
+            <text
+              x="14"
+              y="19"
+              text-anchor="middle"
+              fill="white"
+              font-size="11"
+              font-family="Sora"
+              font-weight="600"
+            >
+              M
+            </text>
           </svg>
         </div>
         <span class="brand-name">CodeMark</span>
@@ -65,19 +192,80 @@
     <div class="form-panel" [class.hidden]="!isLoginMode">
       <h2 class="form-title">Welcome back</h2>
 
-      <input class="field" type="email" placeholder="Enter your email" [(ngModel)]="email" name="loginEmail" required />
-      <input class="field" type="password" placeholder="Password" [(ngModel)]="password" name="loginPassword" required />
+      <input
+        class="field"
+        type="email"
+        placeholder="Enter your email"
+        [(ngModel)]="email"
+        name="loginEmail"
+        required
+      />
+      <div class="pw-wrap">
+        <input
+          class="field"
+          type="password"
+          placeholder="Password"
+          [(ngModel)]="password"
+          name="loginPassword"
+          required
+          #pwField3
+        />
+        <button type="button" class="eye-btn" (click)="togglePw(pwField3)">
+          <svg
+            class="eye-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <svg
+            class="eye-off-icon"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"
+            />
+            <line x1="1" y1="1" x2="23" y2="23" />
+          </svg>
+        </button>
+      </div>
 
       <a href="#" class="forgot">Forgot password?</a>
       <button class="btn-primary" (click)="onLogin()">Sign in</button>
 
-      <p style="color:red" *ngIf="errorMsg">{{ errorMsg }}</p>
+      <p style="color: red" *ngIf="errorMsg">{{ errorMsg }}</p>
 
       <div class="brand">
         <div class="brand-icon">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="14" cy="14" r="13" stroke="white" stroke-width="1.5"/>
-            <text x="14" y="19" text-anchor="middle" fill="white" font-size="11" font-family="Sora" font-weight="600">M</text>
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 28 28"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <circle cx="14" cy="14" r="13" stroke="white" stroke-width="1.5" />
+            <text
+              x="14"
+              y="19"
+              text-anchor="middle"
+              fill="white"
+              font-size="11"
+              font-family="Sora"
+              font-weight="600"
+            >
+              M
+            </text>
           </svg>
         </div>
         <span class="brand-name">CodeMark</span>
@@ -85,6 +273,5 @@
 
       <p class="terms">By signing in, you agree to our <a href="#">Terms & Service</a></p>
     </div>
-
   </div>
 </div>

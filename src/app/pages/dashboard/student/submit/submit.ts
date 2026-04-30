@@ -37,7 +37,7 @@ export class Submit implements OnInit {
   uploadError: string | null = null;
   submitSuccess = false;
 
-  private readonly allowedExtensions = ['.py', '.java', '.cpp', '.js', '.c'];
+  private readonly allowedExtensions = ['.py', '.java', '.cpp', '.js', '.c', 'c++'];
 
   constructor(
     private api: Api,

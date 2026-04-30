@@ -212,3 +212,55 @@ body {
 .hidden {
   display: none;
 }
+
+/* ── Password wrapper ── */
+.pw-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.pw-wrap .field {
+  margin-bottom: 0;
+  padding-right: 46px;
+}
+
+.eye-btn {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.eye-btn:hover {
+  color: #5865f2;
+}
+
+.eye-icon,
+.eye-off-icon {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* Show/hide the correct icon based on input type */
+/* You can drive this via Angular class binding instead */
+.eye-btn .eye-off-icon {
+  display: none;
+}
+
+.pw-wrap input[type="text"] ~ .eye-btn .eye-icon {
+  display: none;
+}
+
+.pw-wrap input[type="text"] ~ .eye-btn .eye-off-icon {
+  display: block;
+}

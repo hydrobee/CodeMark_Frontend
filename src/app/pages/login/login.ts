@@ -102,6 +102,10 @@ export class Login {
     });
   }
 
+  togglePw(input: HTMLInputElement) {
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
   onLogin() {
     this.api.login(this.email, this.password).subscribe({
       next: (res) => {

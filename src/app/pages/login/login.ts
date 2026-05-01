@@ -119,4 +119,14 @@ export class Login {
       error: (err) => (this.errorMsg = err.error?.detail || 'Login failed'),
     });
   }
+
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      if (this.isLoginMode) {
+        this.onLogin();
+      } else {
+        this.onSignup();
+      }
+    }
+  }
 }

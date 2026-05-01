@@ -22,6 +22,7 @@
           [(ngModel)]="name"
           name="name"
           required
+          (keydown)="onKeydown($event)"
         />
         <input
           class="field"
@@ -29,6 +30,7 @@
           placeholder="Last Name"
           [(ngModel)]="lastName"
           name="lastName"
+          (keydown)="onKeydown($event)"
         />
       </div>
 
@@ -50,8 +52,8 @@
           [(ngModel)]="matricNo"
           name="matricNo"
           required
+          (keydown)="onKeydown($event)"
         />
-        <!-- <input class="field" type="text" placeholder="Group No" [(ngModel)]="groupNo" name="groupNo" required /> -->
       </div>
 
       <!-- Lecturer field -->
@@ -63,6 +65,7 @@
           [(ngModel)]="staffId"
           name="staffId"
           required
+          (keydown)="onKeydown($event)"
         />
       </div>
 
@@ -73,8 +76,10 @@
         [(ngModel)]="email"
         name="email"
         required
+        (keydown)="onKeydown($event)"
       />
-      <!-- Sign Up Form – Password fields -->
+
+      <!-- Password -->
       <div class="pw-wrap">
         <input
           class="field"
@@ -84,7 +89,7 @@
           name="password"
           required
           #pwField1
-          (keydown.enter)="onLogin()"
+          (keydown)="onKeydown($event)"
         />
         <button type="button" class="eye-btn" (click)="togglePw(pwField1)">
           <svg
@@ -116,6 +121,7 @@
         </button>
       </div>
 
+      <!-- Confirm Password -->
       <div class="pw-wrap">
         <input
           class="field"
@@ -125,7 +131,7 @@
           name="confirmPassword"
           required
           #pwField2
-          (keydown.enter)="onSignup()"
+          (keydown)="onKeydown($event)"
         />
         <button type="button" class="eye-btn" (click)="togglePw(pwField2)">
           <svg
@@ -201,7 +207,9 @@
         [(ngModel)]="email"
         name="loginEmail"
         required
+        (keydown)="onKeydown($event)"
       />
+
       <div class="pw-wrap">
         <input
           class="field"
@@ -211,6 +219,7 @@
           name="loginPassword"
           required
           #pwField3
+          (keydown)="onKeydown($event)"
         />
         <button type="button" class="eye-btn" (click)="togglePw(pwField3)">
           <svg

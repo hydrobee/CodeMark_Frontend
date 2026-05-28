@@ -190,8 +190,11 @@ export class Submit implements OnInit {
 
   getFileUrl(): string {
     if (!this.assignment?.question_file_path) return '#';
-    const normalized = this.assignment.question_file_path.replace(/\\/g, '/');
-    return `https://codemark-ai-assisted-student-programming.onrender.com/${normalized}`;
+    const path = this.assignment.question_file_path;
+    if (!path.startsWith('http')) {
+      return `https://codemark-ai-assisted-student-programming.onrender.com/${path}`;
+    }
+    return path; // ← already a full Supabase URL, return as-is
   }
 
   getRubricUrl(): string {

@@ -53,6 +53,10 @@ export class EditAssignment implements OnInit {
     this.router.navigate(['/edit-assignment-form', assignment.assignment_id]);
   }
 
+  goToManagement(): void {
+    this.router.navigate(['/assignment-management']);
+  }
+
   goBack(): void {
     window.history.back();
   }

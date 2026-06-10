@@ -251,7 +251,7 @@
         </button>
       </div>
 
-      <a href="#" class="forgot">Forgot password?</a>
+      <a routerLink="/reset-password" class="forgot">Forgot password?</a>
       <button class="btn-primary" (click)="onLogin()">Sign in</button>
 
       <p style="color: red" *ngIf="errorMsg">{{ errorMsg }}</p>

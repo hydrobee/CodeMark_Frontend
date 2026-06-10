@@ -31,6 +31,7 @@ import { DeleteUser } from './pages/dashboard/admin/delete-user/delete-user';
 import { Support } from './pages/dashboard/student/support/support';
 import { SupportLecturer } from './pages/dashboard/lecturer/support-lecturer/support-lecturer';
 import { EditAssignmentForm } from './pages/dashboard/lecturer/edit-assignment-form/edit-assignment-form';
+import { Reset } from './pages/login/reset/reset';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -66,5 +67,6 @@ export const routes: Routes = [
   { path: 'support', component: Support},
   { path: 'support-lecturer', component: SupportLecturer},
   { path: 'edit-assignment-form/:id', component: EditAssignmentForm},
+  { path: 'forgot-password', component: Reset},
   { path: '**', redirectTo: 'login' },
 ];

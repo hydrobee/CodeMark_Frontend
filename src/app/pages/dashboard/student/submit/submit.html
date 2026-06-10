@@ -23,7 +23,7 @@
               <h6>{{ assignment.course_name }} - {{ assignment.title }}</h6>
             </div>
             <div class="detail">
-              <p>Opened:</p>
+              <p>Opened: {{ assignment.created_at | date: 'mediumDate' }}</p>
               <p>Due: {{ assignment.deadline | date: 'mediumDate' }}</p>
             </div>
           </div>

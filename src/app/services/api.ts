@@ -592,4 +592,8 @@ export class Api {
       }),
     );
   }
+
+  resetPassword(email: string, new_password: string): Observable<any> {
+  return this.http.post(`${this.baseUrl}/auth/reset-password`, { email, new_password });
+}
 }

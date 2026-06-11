@@ -17,8 +17,13 @@ export class Reset {
   error: string | null = null;
   success = false;
   isLoading = false;
+  showNewPassword = false;
+  showConfirmPassword = false;
 
   constructor(private api: Api, private router: Router) {}
+
+  toggleNewPassword() { this.showNewPassword = !this.showNewPassword; }
+  toggleConfirmPassword() { this.showConfirmPassword = !this.showConfirmPassword; }
 
   submit() {
     this.error = null;

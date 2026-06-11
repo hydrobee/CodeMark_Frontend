@@ -3,7 +3,7 @@
 
     <div class="brand">
       <div class="brand-icon">
-        <img src="assets/logo.png" alt="CodeMark" width="24" height="24" />
+        <img src="CodeMark Logo.png" alt="CodeMark" width="30" height="auto" />
       </div>
       <span class="brand-name">CODEMARK</span>
     </div>
@@ -17,8 +17,32 @@
 
     <div *ngIf="!success">
       <input class="field" type="email" [(ngModel)]="email" placeholder="Email" />
-      <input class="field" type="password" [(ngModel)]="newPassword" placeholder="New Password" />
-      <input class="field" type="password" [(ngModel)]="confirmPassword" placeholder="Confirm Password" />
+
+      <div class="pw-wrap">
+        <input class="field" [type]="showNewPassword ? 'text' : 'password'" [(ngModel)]="newPassword" placeholder="New Password" />
+        <button class="eye-btn" type="button" (click)="toggleNewPassword()">
+          <svg *ngIf="!showNewPassword" class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          <svg *ngIf="showNewPassword" class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 012.084-3.416M6.53 6.53A9.97 9.97 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.072 5.328M3 3l18 18" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="pw-wrap">
+        <input class="field" [type]="showConfirmPassword ? 'text' : 'password'" [(ngModel)]="confirmPassword" placeholder="Confirm Password" />
+        <button class="eye-btn" type="button" (click)="toggleConfirmPassword()">
+          <svg *ngIf="!showConfirmPassword" class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+          <svg *ngIf="showConfirmPassword" class="eye-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.477 0-8.268-2.943-9.542-7a9.97 9.97 0 012.084-3.416M6.53 6.53A9.97 9.97 0 0112 5c4.477 0 8.268 2.943 9.542 7a9.97 9.97 0 01-4.072 5.328M3 3l18 18" />
+          </svg>
+        </button>
+      </div>
 
       <div *ngIf="error" class="error-msg">{{ error }}</div>
 

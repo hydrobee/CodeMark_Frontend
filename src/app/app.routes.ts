@@ -68,5 +68,6 @@ export const routes: Routes = [
   { path: 'support-lecturer', component: SupportLecturer},
   { path: 'edit-assignment-form/:id', component: EditAssignmentForm},
   { path: 'forgot-password', component: Reset},
+  { path: 'admin-support', component: Support},
   { path: '**', redirectTo: 'login' },
 ];
